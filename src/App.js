@@ -63,10 +63,10 @@ class ScrollableTabsButtonForce extends React.Component {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab label="Getting Started" icon={<i class="fab fa-2x fa-paypal"/>} />
-            <Tab label="Sale Payments" icon={<i class="fas fa-2x fa-dollar-sign"/>} />
-            <Tab label="Billing Agreements" icon={<i class="far fa-2x fa-calendar-check"/>} />
-            <Tab label="Transaction Reports" icon={<i class="far fa-2x fa-chart-bar"/>} />
+            <Tab label="Getting Started" icon={<i className="fab fa-2x fa-paypal"/>} />
+            <Tab label="Sale Payments" icon={<i className="fas fa-2x fa-dollar-sign"/>} />
+            <Tab label="Billing Agreements" icon={<i className="far fa-2x fa-calendar-check"/>} />
+            <Tab label="Transaction Reports" icon={<i className="far fa-2x fa-chart-bar"/>} />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer>
