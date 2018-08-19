@@ -1,70 +1,109 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
-const BasicExample = () => (
-  <Router>
-    <div>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/topics">Topics</Link>
-        </li>
-      </ul>
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
 
-      <hr />
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
-      <Route exact path="/" component={Home} />
-      <Route path="/about" component={About} />
-      <Route path="/topics" component={Topics} />
-    </div>
-  </Router>
-);
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+  input: {
+    display: 'none',
+  },
+});
 
-const Home = () => (
-  <div>
-    <h2>Home</h2>
-  </div>
-);
+class ScrollableTabsButtonForce extends React.Component {
+  state = {
+    value: 0,
+  };
 
-const About = () => (
-  <div>
-    <h2>About</h2>
-  </div>
-);
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
 
-const Topics = ({ match }) => (
-  <div>
-    <h2>Topics</h2>
-    <ul>
-      <li>
-        <Link to={`${match.url}/rendering`}>Rendering with React</Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/components`}>Components</Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/props-v-state`}>Props v. State</Link>
-      </li>
-    </ul>
+  render() {
+    const { classes } = this.props;
+    const { value } = this.state;
 
-    <Route path={`${match.url}/:topicId`} component={Topic} />
-    <Route
-      exact
-      path={match.url}
-      render={() => <h3>Please select a topic.</h3>}
-    />
-  </div>
-);
+    return (
+      <div className={classes.root}>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={value}
+            onChange={this.handleChange}
+            scrollable
+            scrollButtons="on"
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab label="Getting Started" icon={<i class="fab fa-2x fa-paypal"/>} />
+            <Tab label="Sale Payments" icon={<i class="fas fa-2x fa-dollar-sign"/>} />
+            <Tab label="Billing Agreements" icon={<i class="far fa-2x fa-calendar-check"/>} />
+            <Tab label="Transaction Reports" icon={<i class="far fa-2x fa-chart-bar"/>} />
+          </Tabs>
+        </AppBar>
+        {value === 0 && <TabContainer>
+          <div>
+            <h4>Getting Started in the PayPal Sandbox</h4>
+            <TextField
+              id="clientID"
+              label="Client ID"
+              type="search"
+              className={classes.textField}
+              margin="normal"
+              style={{marginRight: '30px'}}
+            />
+            <br/>
+            <TextField
+              id="clientSecret"
+              label="Secret"
+              type="search"
+              className={classes.textField}
+              margin="normal"
+            />
+            <br/><br/>
+            <Button variant="outlined" color="primary" className={classes.button}>
+              Save
+            </Button>
+          </div>
+        </TabContainer>}
+        {value === 1 && <TabContainer>Sale Payments</TabContainer>}
+        {value === 2 && <TabContainer>Billing Agreements</TabContainer>}
+        {value === 3 && <TabContainer>Transaction Reports</TabContainer>}
+      </div>
+    );
+  }
+}
 
-const Topic = ({ match }) => (
-  <div>
-    <h3>{match.params.topicId}</h3>
-  </div>
-);
+ScrollableTabsButtonForce.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
-export default BasicExample;
+export default withStyles(styles)(ScrollableTabsButtonForce);
