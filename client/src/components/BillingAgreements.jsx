@@ -86,7 +86,7 @@ class BillingAgreements extends React.Component {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
     if (urlParams.token) {
-      this.setState({paymentStatus:"Payment approved... executing agreement."});
+      this.setState({paymentStatus:"Agreement approved... executing agreement."});
       var url = 'https://'+ serverHost + '/api/execute-agreement?token=' + urlParams.token + '&APIKey=' + apiKey + '&APISecret=' + apiSecret
       fetch(url)
       .then(response => {
@@ -96,7 +96,7 @@ class BillingAgreements extends React.Component {
           if(data.response){
             this.setState({paymentStatus:JSON.stringify(data.response)});
           } else {
-            this.setState({paymentStatus:"Payment Executed"});
+            this.setState({paymentStatus:"Agreement Executed"});
           }
         })
     }
