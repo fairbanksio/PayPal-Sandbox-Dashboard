@@ -12,7 +12,7 @@
   },
   "devDependencies": {},
   "scripts": {
-     "start": "cd client && yarn build && cd .. && yarn install && node server.js"
+     "start": "cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
    },
   "repository": {
     "type": "git",
