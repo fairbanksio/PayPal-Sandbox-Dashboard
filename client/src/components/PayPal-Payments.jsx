@@ -33,23 +33,27 @@ class PayPalPayments extends React.Component {
   }
 
   handleSubmit(event) {
-    var apiKey = localStorage.getItem('apiKey')
-    var apiSecret = localStorage.getItem('apiSecret')
-    var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments'
-    this.setState({paymentStatus:"Creating Payment"});
-    fetch(url)
-    .then(response => {
-        return response.json()
-      }).then(data => {
-        console.log(data);
-        if(data.response){
-          this.setState({paymentStatus:JSON.stringify(data.response)});
-        } else {
-          this.setState({paymentStatus:"Redirecting for approval"});
-          window.location = data.links[1].href;
+    var apiKey = localStorage.getItem("clientID")
+    var apiSecret = localStorage.getItem("clientSecret")
+    if (apiKey == "" && apiSecret == ""){
+      this.setState({paymentStatus:"API Credentials not defined"});
+    } else {
+      var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments'
+      this.setState({paymentStatus:"Creating Payment"});
+      fetch(url)
+      .then(response => {
+          return response.json()
+        }).then(data => {
+          console.log(data);
+          if(data.response){
+            this.setState({paymentStatus:JSON.stringify(data.response)});
+          } else {
+            this.setState({paymentStatus:"Redirecting for approval"});
+            window.location = data.links[1].href;
 
-        }
-      })
+          }
+        })
+    }
 
     event.preventDefault();
   }
@@ -84,12 +88,6 @@ class PayPalPayments extends React.Component {
         <div>
           <h4>Create Express Checkout Payment</h4>
           <form onSubmit={this.handleSubmit}>
-            <label>
-              API Key:
-              <input id= "apiKey" type="text" value={localStorage.getItem('apiKey')} onChange={this.handleChange} />
-              API Secret:
-              <input id= "apiSecret" type="text" value={localStorage.getItem('apiSecret')} onChange={this.handleChange} />
-            </label>
             <input type="submit" value="Create Payment" />
             {this.state.paymentStatus}
           </form>
