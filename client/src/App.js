@@ -76,7 +76,7 @@ class ScrollableTabsButtonForce extends React.Component {
           <Route path="/payments" component={PayPalPayments} />
           <Route path="/agreements" component={BillingAgreements} />
           <Route path="/transaction-reports" component={TransactionReports} />
-          <Route redirect exact path="/" to="/getting-started" />
+          <Route exact path="/" component={GettingStarted} />
         </div>
       </Router>
     );
