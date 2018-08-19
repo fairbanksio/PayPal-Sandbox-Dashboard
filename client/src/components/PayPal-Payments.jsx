@@ -59,7 +59,7 @@ class PayPalPayments extends React.Component {
     if (apiKey === "" && apiSecret === ""){
       this.setState({paymentStatus:"API Credentials not defined"});
     } else {
-      var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments'
+      var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments' 
       this.setState({paymentStatus:"Creating Payment"});
       fetch(url)
       .then(response => {
@@ -80,10 +80,12 @@ class PayPalPayments extends React.Component {
   }
 
   componentDidMount(){
+    var apiKey = localStorage.getItem("clientID")
+    var apiSecret = localStorage.getItem("clientSecret")
     var urlParams = qs.parse(this.props.location.search.slice(1));
     if (urlParams.paymentId && urlParams.PayerID) {
       this.setState({paymentStatus:"Payment approved... executing payment."});
-      var url = 'https://'+ serverHost + '/api/execute-payment?paymentId=' + urlParams.paymentId + '&PayerID=' + urlParams.PayerID
+      var url = 'https://'+ serverHost + '/api/execute-payment?paymentId=' + urlParams.paymentId + '&PayerID=' + urlParams.PayerID + '&APIKey=' + apiKey + '&APISecret=' + apiSecret
       fetch(url)
       .then(response => {
           return response.json()

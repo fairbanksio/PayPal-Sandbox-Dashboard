@@ -5,42 +5,35 @@ var bodyParser = require('body-parser');
 var logger = require('./configs/logger');
 var paypal = require('paypal-rest-sdk');
 var url = require('url');
-var serverHost = process.env.SERVER_HOST;
 const path = require('path');
 
-
+var serverHost = process.env.SERVER_HOST;
 var app = express();
 app.use(bodyParser.urlencoded({	extended: false }));
 
-
+// Define path for react-app client front end
 app.use(express.static(path.join(__dirname, 'client/build')));
-
-
-// Get API credentials
-app.get('/api/', function(req, res){
-	res.send(
-	"<h2>PayPal SandBox Payment Generator</h2><br><h4>Create Payment</h4><form action='/api/create-payment'>API Key:<br><input type='text' name='APIKey' value=''><br>API Secret:<br><input type='text' name='APISecret' value=''><br><br><input type='submit' value='Submit'></form> \
-</hr><h4>Create Billing Agreement</h4><form action='/api/create-agreement'>API Key:<br><input type='text' name='APIKey' value=''><br>API Secret:<br><input type='text' name='APISecret' value=''><br><br><input type='submit' value='Submit'></form>"
-); })
 
 // Create payment
 app.get('/api/create-payment', function(req, res){
 	var apiKey = req.query.APIKey;
 	var apiSecret = req.query.APISecret;
 	var redirectURL = req.query.RedirectURL;
-	createPayment(apiKey, apiSecret,redirectURL, function(paymentResults){
+	createPayment(apiKey, apiSecret, redirectURL, function(paymentResults){
 		//redirect to our approval handler to execute payment
 		res.json(paymentResults)
 		console.log("Payment data sent back to user")
 	});
 })
 
-// Create payment
+// Create agreement
 app.get('/api/create-agreement', function(req, res){
 	var apiKey = req.query.APIKey;
 	var apiSecret = req.query.APISecret;
-	createBillingPlan(apiKey, apiSecret, function(billingAgreementResults){
+	var redirectURL = req.query.RedirectURL;
+	createBillingPlan(apiKey, apiSecret, redirectURL, function(billingAgreementResults){
 		//redirect to our approval handler to execute payment
+		console.log(billingAgreementResults);
 		res.json(billingAgreementResults)
 
 	});
@@ -50,31 +43,27 @@ app.get('/api/create-agreement', function(req, res){
 app.get('/api/execute-payment', function(req, res){
 	var payerId = req.query.PayerID;
 	var paymentId = req.query.paymentId;
+	var apiKey = req.query.APIKey;
+	var apiSecret = req.query.APISecret;
 	console.log("User has approved the payment");
-	executePayment(payerId, paymentId, function(payment){
+	executePayment(apiKey, apiSecret, payerId, paymentId, function(payment){
 		//console.log(payment)
 		res.json(payment);
 	})
 })
 
 // Execute Agreement
-app.get('/api/agreement-approved', function(req, res){
+app.get('/api/execute-agreement', function(req, res){
 	var paymentToken = req.query.token
+	var apiKey = req.query.APIKey;
+	var apiSecret = req.query.APISecret;
+	console.log('execute agreement request');
+	executeAgreement(apiKey, apiSecret, paymentToken, function(agreement){
+		//console.log(payment)
+		res.json(agreement);
+	})
 
-	paypal.billingAgreement.execute(paymentToken, {}, function (error, billingAgreement) {
-	    if (error) {
-	        console.log(error);
-	        throw error;
-	    } else {
-	        console.log("Billing Agreement has been executed");
-	        console.log(JSON.stringify(billingAgreement));
-					res.send("Agreement approved");
-	    }
-	});
 })
-
-
-
 
 function createPayment(apiKey, apiSecret, redirectURL, callback){
 	if(apiKey && apiSecret){
@@ -129,7 +118,7 @@ function createPayment(apiKey, apiSecret, redirectURL, callback){
 	}
 }
 
-function createBillingPlan(apiKey, apiSecret, callback){
+function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 	if(apiKey && apiSecret){
 
 		//configure paypal
@@ -151,10 +140,10 @@ function createBillingPlan(apiKey, apiSecret, callback){
 		    "description": "Create Plan for Regular",
 		    "merchant_preferences": {
 		        "auto_bill_amount": "yes",
-		        "cancel_url": "https://" + serverHost + "/api/",
+		        "cancel_url": redirectURL,
 		        "initial_fail_amount_action": "continue",
 		        "max_fail_attempts": "1",
-		        "return_url": "https://" + serverHost + "/api/agreement-approved",
+		        "return_url": redirectURL,
 		        "setup_fee": {
 		            "currency": "USD",
 		            "value": "25"
@@ -287,9 +276,17 @@ function createBillingPlan(apiKey, apiSecret, callback){
 	}
 }
 
+function executePayment(apiKey, apiSecret, payerId, paymentId, callback){
+		//configure paypal
+		paypal.configure({
+			'mode': 'sandbox',
+			'client_id': apiKey,
+			'client_secret': apiSecret,
+			'headers' : {
+			'custom': 'header'
+			}
+		});
 
-
-function executePayment(payerId, paymentId, callback){
 		var execute_payment_json = {
 				"payer_id": payerId,
 				"transactions": [{
@@ -311,6 +308,32 @@ function executePayment(payerId, paymentId, callback){
 		});
 }
 
+function executeAgreement(apiKey, apiSecret, paymentToken, callback){
+		//configure paypal
+		paypal.configure({
+			'mode': 'sandbox',
+			'client_id': apiKey,
+			'client_secret': apiSecret,
+			'headers' : {
+			'custom': 'header'
+			}
+		});
+
+		console.log("payment is being executed")
+
+		paypal.billingAgreement.execute(paymentToken, {}, function (error, billingAgreement) {
+
+
+				if (error) {
+						console.log(error);
+						callback(error);
+				} else {
+						console.log("Billing Agreement has been executed");
+						callback(billingAgreement);
+				}
+		});
+}
+// Serve react-app client application
 app.get('*', (req,res) => {
  res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
