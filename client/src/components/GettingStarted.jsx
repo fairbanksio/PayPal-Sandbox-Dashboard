@@ -69,6 +69,7 @@ class GettingStarted extends React.Component {
               className={classes.textField}
               margin="normal"
               onChange={this.handleChange}
+              style={{width: '500px'}}
             />
             <br/>
             <TextField
@@ -78,6 +79,7 @@ class GettingStarted extends React.Component {
               className={classes.textField}
               margin="normal"
               onChange={this.handleChange}
+              style={{width: '500px'}}
             />
             <br/><br/>
             <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleSubmit}>
