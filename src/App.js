@@ -32,7 +32,7 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200,
+    width: 500,
   },
   input: {
     display: 'none',
@@ -78,7 +78,7 @@ class ScrollableTabsButtonForce extends React.Component {
               type="search"
               className={classes.textField}
               margin="normal"
-              style={{marginRight: '30px'}}
+              style={{width: '500px'}}
             />
             <br/>
             <TextField
@@ -87,6 +87,7 @@ class ScrollableTabsButtonForce extends React.Component {
               type="search"
               className={classes.textField}
               margin="normal"
+              style={{width: '500px'}}
             />
             <br/><br/>
             <Button variant="outlined" color="primary" className={classes.button}>
