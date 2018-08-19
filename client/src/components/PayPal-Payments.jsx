@@ -56,7 +56,7 @@ class PayPalPayments extends React.Component {
   handleSubmit(event) {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
-    if (apiKey == "" && apiSecret == ""){
+    if (apiKey === "" && apiSecret === ""){
       this.setState({paymentStatus:"API Credentials not defined"});
     } else {
       var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments'
