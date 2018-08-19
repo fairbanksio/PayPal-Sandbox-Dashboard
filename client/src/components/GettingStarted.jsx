@@ -49,7 +49,6 @@ class GettingStarted extends React.Component {
   handleChange(event) {
     // Save text value changes to state
     this.setState({[event.target.id]: event.target.value});
-    console.log(event.target.value);
   }
 
   handleSubmit(event) {
@@ -57,12 +56,10 @@ class GettingStarted extends React.Component {
     localStorage.setItem("clientID", this.state.clientID);
     localStorage.setItem("clientSecret", this.state.clientSecret);
     event.preventDefault();
-    console.log('submit button pressed');
   }
 
   render() {
     const { classes } = this.props;
-    console.log(this.state);
     return (
 
       <TabContainer>
