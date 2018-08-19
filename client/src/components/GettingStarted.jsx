@@ -34,9 +34,35 @@ const styles = theme => ({
 
 class GettingStarted extends React.Component {
 
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      clientID: "",
+      clientSecret: "",
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    // Save text value changes to state
+    this.setState({[event.target.id]: event.target.value});
+    console.log(event.target.value);
+  }
+
+  handleSubmit(event) {
+    // Write state to local storage on submit
+    localStorage.setItem("clientID", this.state.clientID);
+    localStorage.setItem("clientSecret", this.state.clientSecret);
+    event.preventDefault();
+    console.log('submit button pressed');
+  }
+
   render() {
     const { classes } = this.props;
-
+    console.log(this.state);
     return (
 
       <TabContainer>
@@ -49,6 +75,7 @@ class GettingStarted extends React.Component {
               className={classes.textField}
               margin="normal"
               style={{marginRight: '30px'}}
+              onChange={this.handleChange}
             />
             <br/>
             <TextField
@@ -57,9 +84,10 @@ class GettingStarted extends React.Component {
               type="search"
               className={classes.textField}
               margin="normal"
+              onChange={this.handleChange}
             />
             <br/><br/>
-            <Button variant="outlined" color="primary" className={classes.button}>
+            <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleSubmit}>
               Save
             </Button>
           </div>
