@@ -1,7 +1,9 @@
 import React from "react";
 import qs from 'qs';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 function TabContainer(props) {
   return (
@@ -12,6 +14,25 @@ function TabContainer(props) {
 }
 
 var serverHost = process.env.REACT_APP_HOST;
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+  input: {
+    display: 'none',
+  },
+});
 
 class PayPalPayments extends React.Component {
 
@@ -81,16 +102,18 @@ class PayPalPayments extends React.Component {
 
 
   render() {
+    const { classes } = this.props;
     return (
 
       <TabContainer>
 
         <div>
           <h4>Create Express Checkout Payment</h4>
-          <form onSubmit={this.handleSubmit}>
-            <input type="submit" value="Create Payment" />
-            {this.state.paymentStatus}
-          </form>
+          <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleSubmit}>
+            Create Payment
+          </Button>
+          <hr/>
+          {this.state.paymentStatus}
         </div>
 
 
@@ -104,4 +127,8 @@ class PayPalPayments extends React.Component {
 
 }
 
-export default PayPalPayments
+PayPalPayments.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(PayPalPayments);
