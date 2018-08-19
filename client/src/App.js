@@ -43,9 +43,6 @@ const styles = theme => ({
 });
 
 class ScrollableTabsButtonForce extends React.Component {
-
-
-
   state = {
     value: 0,
   };
@@ -57,7 +54,6 @@ class ScrollableTabsButtonForce extends React.Component {
   render() {
     const { classes } = this.props;
     const { value } = this.state;
-
     return (
       <Router>
         <div className={classes.root}>
@@ -81,17 +77,8 @@ class ScrollableTabsButtonForce extends React.Component {
           <Route path="/agreements" component={BillingAgreements} />
           <Route path="/transaction-reports" component={TransactionReports} />
           <Route redirect exact path="/" to="/getting-started" />
-
         </div>
-
-
-
-
-
-
       </Router>
-
-
     );
   }
 }

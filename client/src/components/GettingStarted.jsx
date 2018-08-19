@@ -33,8 +33,6 @@ const styles = theme => ({
 });
 
 class GettingStarted extends React.Component {
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -61,7 +59,6 @@ class GettingStarted extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-
       <TabContainer>
         <div>
             <h4>Getting Started in the PayPal Sandbox</h4>
@@ -71,8 +68,8 @@ class GettingStarted extends React.Component {
               type="search"
               className={classes.textField}
               margin="normal"
-              style={{marginRight: '30px'}}
               onChange={this.handleChange}
+              style={{width: '500px'}}
             />
             <br/>
             <TextField
@@ -82,15 +79,14 @@ class GettingStarted extends React.Component {
               className={classes.textField}
               margin="normal"
               onChange={this.handleChange}
+              style={{width: '500px'}}
             />
             <br/><br/>
             <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleSubmit}>
               Save
             </Button>
           </div>
-
       </TabContainer>
-
     );
   }
 
