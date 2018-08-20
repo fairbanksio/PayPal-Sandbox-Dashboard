@@ -40,8 +40,7 @@ app.get('/api/create-agreement', function(req, res){
 	var apiSecret = req.query.APISecret;
 	var redirectURL = req.query.RedirectURL;
 	createBillingPlan(apiKey, apiSecret, redirectURL, function(billingAgreementResults){
-		// Redirect to approval handler to execute payment
-		console.log(billingAgreementResults);
+		// Redirect to our approval handler to execute payment
 		res.json(billingAgreementResults)
 	});
 })
@@ -64,7 +63,7 @@ app.get('/api/execute-agreement', function(req, res){
 	var paymentToken = req.query.token
 	var apiKey = req.query.APIKey;
 	var apiSecret = req.query.APISecret;
-	console.log('execute agreement request');
+	console.log("User has approved the agreement");
 	executeAgreement(apiKey, apiSecret, paymentToken, function(agreement){
 		//console.log(payment)
 		res.json(agreement);
@@ -265,7 +264,7 @@ function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 						callback(billingPlan)
 						//throw error;
 		    } else {
-		        console.log("Billing Plan Created");
+		        console.log("Billing plan created");
 
 						billingAgreementAttributes.plan.id = billingPlan.id;
 						// Activate the plan by changing status to Active
@@ -274,7 +273,7 @@ function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 		                console.log(error);
 		                //throw error;
 		            } else {
-		                console.log("Billing Plan state changed to " + billingPlan.state);
+		                console.log("Billing plan state changed to " + billingPlan.state);
 		                billingAgreementAttributes.plan.id = billingPlan.id;
 
 		                // Use activated billing plan to create agreement
@@ -283,7 +282,7 @@ function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 		                        console.log(error);
 		                        //throw error;
 		                    } else {
-		                        console.log("Billing Agreement Created from Billing Plan");
+		                        console.log("Billing agreement created from billing plan");
 		                        //console.log(billingAgreement);
 														callback(billingAgreement)
 		                    }
@@ -321,7 +320,7 @@ function executePayment(apiKey, apiSecret, payerId, paymentId, callback){
 						callback(error);
 						//throw error;
 				} else {
-						console.log("Payment Executed");
+						console.log("Payment executed");
 						callback(payment);
 				}
 		});
@@ -338,8 +337,6 @@ function executeAgreement(apiKey, apiSecret, paymentToken, callback){
 			}
 		});
 
-		console.log("payment is being executed")
-
 		paypal.billingAgreement.execute(paymentToken, {}, function (error, billingAgreement) {
 
 
@@ -347,7 +344,7 @@ function executeAgreement(apiKey, apiSecret, paymentToken, callback){
 						console.log(error);
 						callback(error);
 				} else {
-						console.log("Billing Agreement has been executed");
+						console.log("Billing agreement has been executed");
 						callback(billingAgreement);
 				}
 		});

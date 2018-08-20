@@ -57,17 +57,15 @@ class BillingAgreements extends React.Component {
       this.setState({paymentStatus:"API Credentials not defined"});
     } else {
       var url = 'https://'+ serverHost + '/api/create-agreement?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/agreements'
-      this.setState({paymentStatus:"Creating Agreement"});
+      this.setState({paymentStatus:"Creating agreement"});
       fetch(url)
       .then(response => {
           return response.json()
         }).then(data => {
-          console.log(data);
           if(data.response){
             this.setState({paymentStatus:JSON.stringify(data.response)});
           } else {
             this.setState({paymentStatus:"Redirecting for approval"});
-            console.log(data);
             window.location = data.links[0].href;
 
           }
@@ -92,7 +90,7 @@ class BillingAgreements extends React.Component {
           if(data.response){
             this.setState({paymentStatus:JSON.stringify(data.response)});
           } else {
-            this.setState({paymentStatus:"Agreement Executed"});
+            this.setState({paymentStatus:"Agreement executed"});
           }
         })
     }
