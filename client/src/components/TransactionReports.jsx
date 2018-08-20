@@ -30,11 +30,22 @@ const styles = theme => ({
   },
 });
 
+class IpnList extends React.Component {
+  render() {
+    const { classes } = this.props;
+    return (
+      this.props.ipns.length > 0 ? this.props.ipns.map(function(item,key) {
+        return <li key={key}>{item.timestamp + ' - ' + item.status}</li>
+      }) : null
+    );
+  }
+}
+
 class TransactionReports extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ipnData: null,
+      ipnData: {},
       ipnCount: null
     };
     this.getIpnData = this.getIpnData.bind(this);
@@ -81,24 +92,30 @@ class TransactionReports extends React.Component {
         <div>
           <h4>Transaction Reports</h4>
           {ipnCount
-            ? <div>
-                <h6>IPN Count:</h6>
-                <pre>{ipnCount}</pre>
-              </div>
-            : null
-          }
-          {ipnData
-            ? <div>
-              <h6>IPN Data:</h6>
-              <pre>{JSON.stringify(ipnData)}</pre>
-              {ipnData.map(function(ipn, i) {
-                <div>
-                  <span>{i}</span>
-                  <pre>{JSON.stringify(ipn)}</pre>
-                </div>
-              })}
+            ?<div>
+              <h6>IPN Count:</h6>
+              <pre>{ipnCount}</pre>
             </div>
-            : null
+            :null
+          }
+          {ipnData.length > 0
+            ?<div>
+              <h6>IPN Data:</h6>
+              <IpnList ipns={this.state.ipnData}/>
+              <h6>DB Collection:</h6>
+              <pre
+                style={{
+                  whiteSpace: 'pre',
+                  height: '200px',
+                  overflowX: 'auto',
+                  backgroundColor: '#f5f5f5',
+                  padding: '7px'
+                }}
+              >
+                {JSON.stringify(ipnData, null, ' ')}
+              </pre>
+            </div>
+            :null
           }
         </div>
       </TabContainer>
