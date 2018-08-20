@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "@material-ui/icons": "^2.0.3",
     "express": "^4.15.4",
     "express-session": "^1.15.6",
     "mongoose": "^5.2.9",
@@ -13,7 +14,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
+    "start": "clear && cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
   },
   "repository": {
     "type": "git",

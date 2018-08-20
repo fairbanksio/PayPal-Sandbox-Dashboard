@@ -39,7 +39,7 @@ class ScrollableTabsButtonForce extends React.Component {
     this.setState({ value });
     console.log(value);
   };
-
+ 
   render() {
     const { classes } = this.props;
     const { value } = this.state;
