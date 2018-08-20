@@ -58,6 +58,7 @@ class Help extends React.Component {
   render() {
     const { classes } = this.props;
     const { expanded } = this.state;
+
     return (
       <TabContainer>
         <div className={classes.root}>
@@ -97,6 +98,7 @@ class Help extends React.Component {
     );
   }
 }
+
 Help.propTypes = {
   classes: PropTypes.object.isRequired,
 };
