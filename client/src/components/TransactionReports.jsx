@@ -31,12 +31,75 @@ const styles = theme => ({
 });
 
 class TransactionReports extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ipnData: null,
+      ipnCount: null
+    };
+    this.getIpnData = this.getIpnData.bind(this);
+    this.getIpnCount = this.getIpnCount.bind(this);
+  }
+
+  getIpnData() {
+    fetch(`/api/ipnData`)
+    .then(response => {
+        return response.json()
+      }).then(data => {
+        if(data){
+          this.setState({ ipnData: data });
+        } else {
+          this.setState({ ipnData: "Error Getting IPN Data" });
+        }
+      })
+  }
+
+  getIpnCount() {
+    fetch(`/api/ipnCount`)
+    .then(response => {
+        return response.json()
+      }).then(data => {
+        if(data){
+          this.setState({ ipnCount: data });
+        } else {
+          this.setState({ ipnCount: "Error Getting IPN Count" });
+        }
+      })
+  }
+
+  componentDidMount() {
+    this.getIpnData();
+    this.getIpnCount();
+  }
+
   render() {
     const { classes } = this.props;
+    var ipnData = this.state.ipnData;
+    var ipnCount = this.state.ipnCount;
     return (
       <TabContainer>
         <div>
           <h4>Transaction Reports</h4>
+          {ipnCount
+            ? <div>
+                <h6>IPN Count:</h6>
+                <pre>{ipnCount}</pre>
+              </div>
+            : null
+          }
+          {ipnData
+            ? <div>
+              <h6>IPN Data:</h6>
+              <pre>{JSON.stringify(ipnData)}</pre>
+              {ipnData.map(function(ipn, i) {
+                <div>
+                  <span>{i}</span>
+                  <pre>{JSON.stringify(ipn)}</pre>
+                </div>
+              })}
+            </div>
+            : null
+          }
         </div>
       </TabContainer>
     );

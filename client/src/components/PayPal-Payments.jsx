@@ -35,7 +35,6 @@ const styles = theme => ({
 });
 
 class PayPalPayments extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
