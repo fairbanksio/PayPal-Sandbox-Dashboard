@@ -89,7 +89,7 @@ class PayPalPayments extends React.Component {
           if(data.response){
             this.setState({paymentStatus:JSON.stringify(data.response)});
           } else {
-            this.setState({paymentStatus:"Payment Executed"});
+            this.setState({paymentStatus:"Payment executed"});
           }
         })
     }

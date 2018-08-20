@@ -4,24 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import PayPalPayments from "./components/PayPal-Payments.jsx";
 import GettingStarted from "./components/GettingStarted.jsx";
 import BillingAgreements from "./components/BillingAgreements.jsx";
 import TransactionReports from "./components/TransactionReports.jsx";
-
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 const styles = theme => ({
   root: {
@@ -49,7 +36,15 @@ class ScrollableTabsButtonForce extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ value });
+    console.log(value);
   };
+
+  componentWillMount() {
+
+    console.log(this.props);
+
+
+  }
 
   render() {
     const { classes } = this.props;
