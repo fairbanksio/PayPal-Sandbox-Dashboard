@@ -10,6 +10,7 @@ import PayPalPayments from "./components/PayPal-Payments.jsx";
 import GettingStarted from "./components/GettingStarted.jsx";
 import BillingAgreements from "./components/BillingAgreements.jsx";
 import TransactionReports from "./components/TransactionReports.jsx";
+import Help from "./components/Help.jsx";
 
 function TabContainer(props) {
   return (
@@ -70,12 +71,14 @@ class ScrollableTabsButtonForce extends React.Component {
               <Tab label="Sale Payments" icon={<i className="fas fa-2x fa-dollar-sign"/>} component={Link} to="/payments" />
               <Tab label="Billing Agreements" icon={<i className="far fa-2x fa-calendar-check"/>} component={Link} to="/agreements"/>
               <Tab label="Transaction Reports" icon={<i className="far fa-2x fa-chart-bar"/>} component={Link} to="/transaction-reports"/>
+              <Tab label="Help & FAQs" icon={<i className="fas fa-2x fa-question-circle"/>} component={Link} to="/help"/>
             </Tabs>
           </AppBar>
           <Route path="/getting-started" component={GettingStarted} />
           <Route path="/payments" component={PayPalPayments} />
           <Route path="/agreements" component={BillingAgreements} />
           <Route path="/transaction-reports" component={TransactionReports} />
+          <Route path="/help" component={Help} />
           <Route exact path="/" component={GettingStarted} />
         </div>
       </Router>
