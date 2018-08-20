@@ -50,7 +50,7 @@ class GettingStarted extends React.Component {
   }
 
   handleSubmit(event) {
-    // Write state to local storage on submit
+    // Write state to Local Storage on Save
     localStorage.setItem("clientID", this.state.clientID);
     localStorage.setItem("clientSecret", this.state.clientSecret);
     event.preventDefault();
@@ -89,7 +89,6 @@ class GettingStarted extends React.Component {
       </TabContainer>
     );
   }
-
 }
 GettingStarted.propTypes = {
   classes: PropTypes.object.isRequired,

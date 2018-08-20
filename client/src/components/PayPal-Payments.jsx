@@ -41,14 +41,12 @@ class PayPalPayments extends React.Component {
     this.state = {
       paymentStatus: ""
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
   }
 
   handleChange(event) {
-    //save to local storage
+    // Save to Local Storage
     localStorage.setItem(event.target.id, event.target.value);
   }
 
@@ -112,7 +110,6 @@ class PayPalPayments extends React.Component {
       </TabContainer>
     );
   }
-
 }
 
 PayPalPayments.propTypes = {
