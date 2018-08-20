@@ -5,7 +5,15 @@ var bodyParser = require('body-parser');
 var logger = require('./configs/logger');
 var paypal = require('paypal-rest-sdk');
 var url = require('url');
+var mongoose = require("mongoose");
+
 const path = require('path');
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
+var connection = mongoose.connection;
+
+connection.on('error', console.error.bind(console, 'DB Connection Error:'));
+connection.once('open', function () { });
 
 var serverHost = process.env.SERVER_HOST;
 var app = express();
@@ -14,7 +22,7 @@ app.use(bodyParser.urlencoded({	extended: false }));
 // Define path for react-app client front end
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// Create payment
+// Create Payment
 app.get('/api/create-payment', function(req, res){
 	var apiKey = req.query.APIKey;
 	var apiSecret = req.query.APISecret;
@@ -26,15 +34,14 @@ app.get('/api/create-payment', function(req, res){
 	});
 })
 
-// Create agreement
+// Create Billing Agreement
 app.get('/api/create-agreement', function(req, res){
 	var apiKey = req.query.APIKey;
 	var apiSecret = req.query.APISecret;
 	var redirectURL = req.query.RedirectURL;
 	createBillingPlan(apiKey, apiSecret, redirectURL, function(billingAgreementResults){
-		//redirect to our approval handler to execute payment
+		// Redirect to our approval handler to execute payment
 		res.json(billingAgreementResults)
-
 	});
 })
 
@@ -51,7 +58,7 @@ app.get('/api/execute-payment', function(req, res){
 	})
 })
 
-// Execute Agreement
+// Execute Billing Agreement
 app.get('/api/execute-agreement', function(req, res){
 	var paymentToken = req.query.token
 	var apiKey = req.query.APIKey;
@@ -61,13 +68,28 @@ app.get('/api/execute-agreement', function(req, res){
 		//console.log(payment)
 		res.json(agreement);
 	})
+})
 
+app.get('/api/ipnData', function(req, res){
+	connection.db.collection("ipn", function(err, collection){
+			collection.find({}).toArray(function(err, data){
+					//console.log(data); // Print IPN Collection Data
+					res.json(data);
+			})
+	});
+})
+
+app.get('/api/ipnCount', function(req, res){
+	connection.db.collection("ipn", function(err, collection){
+			collection.find({}).count(function(err, data){
+					res.json(data);
+			})
+	});
 })
 
 function createPayment(apiKey, apiSecret, redirectURL, callback){
 	if(apiKey && apiSecret){
-
-		//configure paypal
+		// Configure PayPal SDK
 		paypal.configure({
 			'mode': 'sandbox',
 			'client_id': apiKey,
@@ -111,7 +133,6 @@ function createPayment(apiKey, apiSecret, redirectURL, callback){
 			} else {
 					console.log("Payment Created");
 					callback(payment)
-
 			}
 		});
 	}
@@ -119,8 +140,7 @@ function createPayment(apiKey, apiSecret, redirectURL, callback){
 
 function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 	if(apiKey && apiSecret){
-
-		//configure paypal
+		// Configure PayPal SDK
 		paypal.configure({
 			'mode': 'sandbox',
 			'client_id': apiKey,
@@ -265,7 +285,6 @@ function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 		                        console.log("Billing agreement created from billing plan");
 		                        //console.log(billingAgreement);
 														callback(billingAgreement)
-
 		                    }
 		                });
 		            }
