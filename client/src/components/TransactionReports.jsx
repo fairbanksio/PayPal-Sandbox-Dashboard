@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -32,22 +31,16 @@ const styles = theme => ({
 });
 
 class TransactionReports extends React.Component {
-
   render() {
     const { classes } = this.props;
-
     return (
-
       <TabContainer>
         <div>
           <h4>Transaction Reports</h4>
         </div>
-
       </TabContainer>
-
     );
   }
-
 }
 TransactionReports.propTypes = {
   classes: PropTypes.object.isRequired,

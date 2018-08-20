@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -42,15 +41,12 @@ class BillingAgreements extends React.Component {
     this.state = {
       paymentStatus: ""
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
-
   }
 
   handleChange(event) {
-    //save to local storage
+    // Save to Local Storage
     localStorage.setItem(event.target.id, event.target.value);
   }
 
@@ -100,17 +96,12 @@ class BillingAgreements extends React.Component {
           }
         })
     }
-
   }
-
-
 
   render() {
     const { classes } = this.props;
     return (
-
       <TabContainer>
-
         <div>
           <h4>Create a Billing Agreement</h4>
           <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleSubmit}>
@@ -119,17 +110,9 @@ class BillingAgreements extends React.Component {
           <hr/>
           {this.state.paymentStatus}
         </div>
-
-
-
       </TabContainer>
-
-
-
     );
   }
-
-
 }
 BillingAgreements.propTypes = {
   classes: PropTypes.object.isRequired,

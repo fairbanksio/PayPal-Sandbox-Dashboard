@@ -41,15 +41,12 @@ class PayPalPayments extends React.Component {
     this.state = {
       paymentStatus: ""
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
-
   }
 
   handleChange(event) {
-    //save to local storage
+    // Save to Local Storage
     localStorage.setItem(event.target.id, event.target.value);
   }
 
@@ -59,7 +56,7 @@ class PayPalPayments extends React.Component {
     if (apiKey === "" && apiSecret === ""){
       this.setState({paymentStatus:"API Credentials not defined"});
     } else {
-      var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments' 
+      var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments'
       this.setState({paymentStatus:"Creating Payment"});
       fetch(url)
       .then(response => {
@@ -71,11 +68,9 @@ class PayPalPayments extends React.Component {
           } else {
             this.setState({paymentStatus:"Redirecting for approval"});
             window.location = data.links[1].href;
-
           }
         })
     }
-
     event.preventDefault();
   }
 
@@ -98,17 +93,12 @@ class PayPalPayments extends React.Component {
           }
         })
     }
-
   }
-
-
 
   render() {
     const { classes } = this.props;
     return (
-
       <TabContainer>
-
         <div>
           <h4>Create Express Checkout Payment</h4>
           <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleSubmit}>
@@ -117,16 +107,9 @@ class PayPalPayments extends React.Component {
           <hr/>
           {this.state.paymentStatus}
         </div>
-
-
-
       </TabContainer>
-
-
-
     );
   }
-
 }
 
 PayPalPayments.propTypes = {
