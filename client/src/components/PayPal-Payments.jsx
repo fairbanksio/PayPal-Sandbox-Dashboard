@@ -8,7 +8,6 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 
-
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -64,8 +63,6 @@ function getStepContent(step) {
 }
 
 class PayPalPayments extends React.Component {
-
-
   isStepOptional = step => {
     //return step === 1;
     return step === null;
@@ -98,7 +95,6 @@ class PayPalPayments extends React.Component {
       // it should never occur unless someone's actively trying to break something.
       throw new Error("You can't skip a step that isn't optional.");
     }
-
     this.setState(state => {
       const skipped = new Set(state.skipped.values());
       skipped.add(activeStep);
@@ -119,7 +115,6 @@ class PayPalPayments extends React.Component {
       this.setState({activeStep: 1});
       localStorage.setItem("step", 1);
     }
-
   }
 
   isStepSkipped(step) {
@@ -167,7 +162,6 @@ class PayPalPayments extends React.Component {
     event.preventDefault();
   }
 
-
   componentWillMount(){
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
@@ -203,15 +197,7 @@ class PayPalPayments extends React.Component {
           }
         })
     }
-
-
-
-
-
-
   }
-
-
 
   render() {
     const { classes } = this.props;
@@ -222,9 +208,6 @@ class PayPalPayments extends React.Component {
         <div>
           <h4>Create Express Checkout Payment</h4>
         </div>
-
-
-
         <div className={classes.root}>
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => {

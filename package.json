@@ -6,14 +6,15 @@
   "dependencies": {
     "express": "^4.15.4",
     "express-session": "^1.15.6",
+    "mongoose": "^5.2.9",
     "paypal-rest-sdk": "^1.8.1",
     "request": "^2.81.0",
     "winston": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {
-     "start": "cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
-   },
+    "start": "cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bsord/paypal-payment-generator.git"
