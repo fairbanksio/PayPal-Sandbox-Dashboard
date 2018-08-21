@@ -4,8 +4,10 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "@material-ui/icons": "^2.0.3",
     "express": "^4.15.4",
     "express-session": "^1.15.6",
+    "moment": "^2.22.2",
     "mongoose": "^5.2.9",
     "paypal-rest-sdk": "^1.8.1",
     "request": "^2.81.0",
@@ -13,7 +15,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
+    "start": "clear && cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
   },
   "repository": {
     "type": "git",

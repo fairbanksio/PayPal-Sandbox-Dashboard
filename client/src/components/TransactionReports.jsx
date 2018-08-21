@@ -2,6 +2,11 @@ import React from "react";
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import moment from 'moment';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 function TabContainer(props) {
   return (
@@ -28,13 +33,69 @@ const styles = theme => ({
   input: {
     display: 'none',
   },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: '33.33%',
+    flexShrink: 0,
+  },
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
 });
+
+class IpnList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { expanded: null };
+  }
+
+  handleChange = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+    });
+  };
+
+  render() {
+    const { classes } = this.props;
+    const { expanded } = this.state;
+    console.log(classes);
+    return (
+      this.props.ipns.length > 0 ? this.props.ipns.map(function(item, key) {
+        var ipnData = JSON.stringify(item.ipnMessage, null, ' ');
+        return (
+          <ExpansionPanel key={key} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{moment(item.timestamp).format('dddd, MMMM Do YYYY, hh:mm:ss a')}</Typography>
+              <Typography>{item.status}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography>
+                <pre
+                  style={{
+                    whiteSpace: 'pre',
+                    height: '200px',
+                    overflowX: 'auto',
+                    backgroundColor: '#f5f5f5',
+                    padding: '7px',
+                  }}
+                >
+                  {ipnData}
+                </pre>
+              </Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        )
+      }, this) : null
+    );
+  }
+}
 
 class TransactionReports extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ipnData: null,
+      ipnData: {},
       ipnCount: null
     };
     this.getIpnData = this.getIpnData.bind(this);
@@ -78,29 +139,27 @@ class TransactionReports extends React.Component {
     var ipnCount = this.state.ipnCount;
     return (
       <TabContainer>
-        <div>
-          <h4>Transaction Reports</h4>
-          {ipnCount
-            ? <div>
-                <h6>IPN Count:</h6>
-                <pre>{ipnCount}</pre>
-              </div>
-            : null
-          }
-          {ipnData
-            ? <div>
-              <h6>IPN Data:</h6>
-              <pre>{JSON.stringify(ipnData)}</pre>
-              {ipnData.map(function(ipn, i) {
-                <div>
-                  <span>{i}</span>
-                  <pre>{JSON.stringify(ipn)}</pre>
-                </div>
-              })}
-            </div>
-            : null
-          }
-        </div>
+        <h4>Transaction Reports</h4>
+        {ipnData.length > 0
+          ?<div>
+            <IpnList ipns={this.state.ipnData}/>
+            <span>{'Total Transactions: ' + ipnCount}</span>
+            <hr/>
+            <h6>DB Collection:</h6>
+            <pre
+              style={{
+                whiteSpace: 'pre',
+                height: '200px',
+                overflowX: 'auto',
+                backgroundColor: '#f5f5f5',
+                padding: '7px'
+              }}
+            >
+              {JSON.stringify(ipnData, null, ' ')}
+            </pre>
+          </div>
+          :<p>Transaction data is loading...</p>
+        }
       </TabContainer>
     );
   }
