@@ -65,7 +65,7 @@ class Help extends React.Component {
           <h4>Help & FAQ's</h4>
           <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography className={classes.heading}>Sandbox Dashboard FAQs</Typography>
+              <Typography className={classes.heading}>Dashboard FAQs</Typography>
               <Typography className={classes.secondaryHeading}>Need help getting this app up and running?</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
@@ -90,7 +90,7 @@ class Help extends React.Component {
             </ExpansionPanelDetails>
           </ExpansionPanel>
           <br/>
-          <span>For Help with App Bugs: <a href='https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard/issues/new'>Open an Issue on GitHub</a></span>
+          <span>For Help with App Bugs: <a href='https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard/issues'>Open an Issue on GitHub</a></span>
           <br/>
           <span>For Help with PayPal Bugs: <a href='https://www.paypal-techsupport.com/'>Contact PayPal Technical Support</a></span>
         </div>
