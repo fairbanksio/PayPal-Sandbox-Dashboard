@@ -90,11 +90,11 @@ class IpnList extends React.Component {
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.heading}>
                 {item.status == "VERIFIED"
-                  ? <i className="fas fa-check-circle" style={{
-                      color: '#227700',
+                  ? <i className="far fa-check-circle" style={{
+                      color: '#090',
                       paddingRight: '25px'
                     }}/>
-                  : <i className="fas fa-exclamation-circle" style={{
+                  : <i className="far fa-times-circle" style={{
                       color: '#D8000C',
                       paddingRight: '25px'
                     }}/>
