@@ -291,7 +291,6 @@ class PayPalPayments extends React.Component {
   componentDidMount(){
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
-    var storedStep = localStorage.getItem("step")
     var urlParams = qs.parse(this.props.location.search.slice(1));
 
     if(apiKey === "" | apiSecret === ""){
