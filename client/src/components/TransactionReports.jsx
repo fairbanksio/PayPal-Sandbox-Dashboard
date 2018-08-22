@@ -99,19 +99,21 @@ class IpnList extends React.Component {
                       paddingRight: '25px'
                     }}/>
                 }
-                <span style={{fontWeight: 410}}>{'Transaction ID: ' + item.ipnMessage.txn_id}</span>
+                <span style={{fontWeight: 375}}><b>Transaction ID: </b>{item.ipnMessage.txn_id}</span>
               </Typography>
               <Typography className={classes.secondaryHeading}>
-                <i>{moment(item.timestamp).format('ddd, MMM Do YYYY @ h:mm:ss A')}</i>
+                <span style={{fontWeight: 350}}>{moment(item.timestamp).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
                 <div style={{ width: '31%'}}>
-                  <span>{'Payment Status: ' + item.ipnMessage.payment_status}</span>
-                  <span>{'IPN Status: ' + item.status}</span>
-                  <span>{'Payer: ' + item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
-                  <span>{'Payment Amount: ' + item.ipnMessage.mc_gross}</span>
+                  <Typography variant="caption">
+                    <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{item.ipnMessage.payment_status}</span>
+                    <span style={{ paddingRight: '25px' }}><b>IPN Status: </b>{item.status}</span>
+                    <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
+                    <span style={{ paddingRight: '25px' }}><b>Payment Amount: $</b>{item.ipnMessage.mc_gross}</span>
+                  </Typography>
                   <hr/>
                   <div>
                     <h4>IPN Message</h4>
@@ -214,16 +216,21 @@ class TransactionReports extends React.Component {
           ?<div>
             <IpnList {...this.props} ipns={this.state.ipnData}/>
             <br/>
-            <i>{'Total Transactions: ' + this.state.ipnCount}</i>
+            <Typography variant="caption">
+              <i>{'Total Transactions: ' + this.state.ipnCount}</i>
+            </Typography>
+            <br/>
             <hr/>
+            <br/>
             <h3>DB Collection:</h3>
             <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}><span style={{ fontWeight: 410 }}>IPN Collection Data</span></Typography>
-                <Typography className={classes.secondaryHeading}><i>Raw Database Response</i></Typography>
+                <Typography className={classes.heading}><b>IPN Collection Data</b></Typography>
+                <Typography className={classes.secondaryHeading}><span style={{fontWeight: 350}}>Raw Database Response</span></Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <Typography>
+                  <hr/>
                   <CodeMirror
                     ref='dbCollection'
                     value={JSON.stringify(this.state.ipnData, null, ' ')}
