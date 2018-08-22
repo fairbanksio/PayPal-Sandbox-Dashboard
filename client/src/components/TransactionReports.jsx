@@ -66,8 +66,8 @@ class IpnList extends React.Component {
         return (
           <ExpansionPanel key={key} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{moment(item.timestamp).format('dddd, MMMM Do YYYY, hh:mm:ss a')}</Typography>
-              <Typography>{item.status}</Typography>
+              <Typography className={classes.heading}>{moment(item.timestamp).format('dddd, MMMM Do YYYY, hh:mm:ss a')}</Typography>
+              <Typography className={classes.secondaryHeading}>{item.status}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
@@ -142,7 +142,7 @@ class TransactionReports extends React.Component {
         <h4>Transaction Reports</h4>
         {ipnData.length > 0
           ?<div>
-            <IpnList ipns={this.state.ipnData}/>
+            <IpnList {...this.props} ipns={this.state.ipnData}/>
             <span>{'Total Transactions: ' + ipnCount}</span>
             <hr/>
             <h6>DB Collection:</h6>
