@@ -59,7 +59,6 @@ class IpnList extends React.Component {
   render() {
     const { classes } = this.props;
     const { expanded } = this.state;
-    console.log(classes);
     return (
       this.props.ipns.length > 0 ? this.props.ipns.map(function(item, key) {
         var ipnData = JSON.stringify(item.ipnMessage, null, ' ');
