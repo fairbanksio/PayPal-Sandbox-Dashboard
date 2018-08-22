@@ -72,8 +72,7 @@ app.get('/api/execute-agreement', function(req, res){
 
 app.get('/api/ipnData', function(req, res){
 	connection.db.collection("ipn", function(err, collection){
-			collection.find({}).toArray(function(err, data){
-					//console.log(data); // Print IPN Collection Data
+			collection.find({}).sort({ timestamp: -1 }).toArray(function(err, data){
 					res.json(data);
 			})
 	});

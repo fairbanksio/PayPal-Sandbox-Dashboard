@@ -7,6 +7,13 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import {UnControlled as CodeMirror} from 'react-codemirror2';
+require('codemirror/mode/javascript/javascript');
+require('codemirror/lib/codemirror.css');
+require('codemirror/theme/material.css');
 
 function TabContainer(props) {
   return (
@@ -15,6 +22,20 @@ function TabContainer(props) {
     </Typography>
   );
 }
+
+// MaterialUI Theme Options: https://material-ui.com/customization/themes/#theme-configuration-variables
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#83c3f7', // Light Blue
+      contrastText: '#fff', // White
+    },
+    secondary: {
+      main: '#a2cf6e', // Light Green (for Copied button)
+      contrastText: '#fff', // White
+    },
+  },
+});
 
 const styles = theme => ({
   root: {
@@ -42,6 +63,9 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
+  progress: {
+    margin: theme.spacing.unit * 2,
+  },
 });
 
 class IpnList extends React.Component {
@@ -61,26 +85,66 @@ class IpnList extends React.Component {
     const { expanded } = this.state;
     return (
       this.props.ipns.length > 0 ? this.props.ipns.map(function(item, key) {
-        var ipnData = JSON.stringify(item.ipnMessage, null, ' ');
         return (
           <ExpansionPanel key={key} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography className={classes.heading}>{moment(item.timestamp).format('dddd, MMMM Do YYYY, hh:mm:ss a')}</Typography>
-              <Typography className={classes.secondaryHeading}>{item.status}</Typography>
+              <Typography className={classes.heading}>
+                {item.status == "VERIFIED"
+                  ? <i className="fas fa-check-circle" style={{
+                      color: '#227700',
+                      paddingRight: '25px'
+                    }}/>
+                  : <i className="fas fa-exclamation-circle" style={{
+                      color: '#D8000C',
+                      paddingRight: '25px'
+                    }}/>
+                }
+                <span style={{fontWeight: 410}}>{'Transaction ID: ' + item.ipnMessage.txn_id}</span>
+              </Typography>
+              <Typography className={classes.secondaryHeading}>
+                <i>{moment(item.timestamp).format('ddd, MMM Do YYYY @ h:mm:ss A')}</i>
+              </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                <pre
-                  style={{
-                    whiteSpace: 'pre',
-                    height: '200px',
-                    overflowX: 'auto',
-                    backgroundColor: '#f5f5f5',
-                    padding: '7px',
-                  }}
-                >
-                  {ipnData}
-                </pre>
+                <div style={{ width: '31%'}}>
+                  <span>{'Payment Status: ' + item.ipnMessage.payment_status}</span>
+                  <span>{'IPN Status: ' + item.status}</span>
+                  <span>{'Payer: ' + item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
+                  <span>{'Payment Amount: ' + item.ipnMessage.mc_gross}</span>
+                  <hr/>
+                  <div>
+                    <h4>IPN Message</h4>
+                    <CodeMirror
+                      ref='ipnMessage'
+                      value={JSON.stringify(item.ipnMessage, null, ' ')}
+                      options={{
+                        lineNumbers: true,
+                        mode: { name: 'javascript', json: true },
+                        theme: 'material',
+                        readOnly: 'nocursor' // Nocursor for proper mobile handling
+                      }}
+                      onChange={(editor, data, value) => {}}
+                      preserveScrollPosition={true}
+                    />
+                  </div>
+                  <br/>
+                  <div>
+                    <h4>IPN Postback</h4>
+                    <CodeMirror
+                      ref='ipnPostback'
+                      value={JSON.stringify(item.ipnPostback, null, ' ')}
+                      options={{
+                        lineNumbers: true,
+                        mode: { name: 'javascript', json: true },
+                        theme: 'material',
+                        readOnly: 'nocursor' // Nocursor for proper mobile handling
+                      }}
+                      onChange={(editor, data, value) => {}}
+                      preserveScrollPosition={true}
+                    />
+                  </div>
+                </div>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
@@ -95,11 +159,18 @@ class TransactionReports extends React.Component {
     super(props);
     this.state = {
       ipnData: {},
-      ipnCount: null
+      ipnCount: null,
+      expanded: null,
     };
     this.getIpnData = this.getIpnData.bind(this);
     this.getIpnCount = this.getIpnCount.bind(this);
   }
+
+  handleChange = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+    });
+  };
 
   getIpnData() {
     fetch(`/api/ipnData`)
@@ -111,6 +182,7 @@ class TransactionReports extends React.Component {
         } else {
           this.setState({ ipnData: "Error Getting IPN Data" });
         }
+        setTimeout
       })
   }
 
@@ -134,30 +206,41 @@ class TransactionReports extends React.Component {
 
   render() {
     const { classes } = this.props;
-    var ipnData = this.state.ipnData;
-    var ipnCount = this.state.ipnCount;
+    const { expanded } = this.state;
     return (
       <TabContainer>
-        <h4>Transaction Reports</h4>
-        {ipnData.length > 0
+        <h3>Transaction Reports</h3>
+        {this.state.ipnData.length > 0
           ?<div>
             <IpnList {...this.props} ipns={this.state.ipnData}/>
-            <span>{'Total Transactions: ' + ipnCount}</span>
+            <br/>
+            <i>{'Total Transactions: ' + this.state.ipnCount}</i>
             <hr/>
-            <h6>DB Collection:</h6>
-            <pre
-              style={{
-                whiteSpace: 'pre',
-                height: '200px',
-                overflowX: 'auto',
-                backgroundColor: '#f5f5f5',
-                padding: '7px'
-              }}
-            >
-              {JSON.stringify(ipnData, null, ' ')}
-            </pre>
+            <h3>DB Collection:</h3>
+            <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}><span style={{ fontWeight: 410 }}>IPN Collection Data</span></Typography>
+                <Typography className={classes.secondaryHeading}><i>Raw Database Response</i></Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <Typography>
+                  <CodeMirror
+                    ref='dbCollection'
+                    value={JSON.stringify(this.state.ipnData, null, ' ')}
+                    options={{
+                      lineNumbers: true,
+                      mode: { name: 'javascript', json: true },
+                      theme: 'material',
+                      readOnly: 'nocursor' // Nocursor for proper mobile handling
+                    }}
+                    onChange={(editor, data, value) => {}}
+                    preserveScrollPosition={true}
+                  />
+                </Typography>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
           </div>
-          :<p>Transaction data is loading...</p>
+          :<CircularProgress className={classes.progress} size={50} />
         }
       </TabContainer>
     );
