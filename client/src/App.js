@@ -15,7 +15,8 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    height: '100%',
+    backgroundColor: '#eeeeee5c' || theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -39,7 +40,7 @@ class ScrollableTabsButtonForce extends React.Component {
     this.setState({ value });
     console.log(value);
   };
- 
+
   render() {
     const { classes } = this.props;
     const { value } = this.state;
