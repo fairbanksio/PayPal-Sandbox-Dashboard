@@ -90,11 +90,11 @@ class IpnList extends React.Component {
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.heading}>
                 {item.status == "VERIFIED"
-                  ? <i className="fas fa-check-circle" style={{
-                      color: '#227700',
+                  ? <i className="far fa-check-circle" style={{
+                      color: '#090',
                       paddingRight: '25px'
                     }}/>
-                  : <i className="fas fa-exclamation-circle" style={{
+                  : <i className="far fa-times-circle" style={{
                       color: '#D8000C',
                       paddingRight: '25px'
                     }}/>
@@ -112,7 +112,7 @@ class IpnList extends React.Component {
                     <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{item.ipnMessage.payment_status}</span>
                     <span style={{ paddingRight: '25px' }}><b>IPN Status: </b>{item.status}</span>
                     <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
-                    <span style={{ paddingRight: '25px' }}><b>Payment Amount: $</b>{item.ipnMessage.mc_gross}</span>
+                    <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{'$' + item.ipnMessage.mc_gross}</span>
                   </Typography>
                   <hr/>
                   <div>
@@ -230,7 +230,7 @@ class TransactionReports extends React.Component {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <Typography>
-                  <hr/>
+                  <hr/><br/>
                   <CodeMirror
                     ref='dbCollection'
                     value={JSON.stringify(this.state.ipnData, null, ' ')}
