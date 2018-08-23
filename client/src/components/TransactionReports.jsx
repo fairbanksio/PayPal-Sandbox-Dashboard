@@ -184,7 +184,10 @@ class TransactionReports extends React.Component {
         } else {
           this.setState({ ipnData: "Error Getting IPN Data" });
         }
-        setTimeout
+        setTimeout(function () {
+          console.log('Checking for new IPNs...')
+          this.getIpnData;
+        }, 3000)
       })
   }
 
