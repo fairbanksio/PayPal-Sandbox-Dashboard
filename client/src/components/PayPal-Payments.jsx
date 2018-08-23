@@ -24,7 +24,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#FAFAFA' || theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -342,7 +342,7 @@ class PayPalPayments extends React.Component {
                 <Typography className={classes.instructions}>
                   All steps completed - you&quot;re finished
                 </Typography>
-                <Button onClick={this.handleReset} className={classes.button}>
+                <Button variant="outlined" onClick={this.handleReset} className={classes.button}>
                   Reset
                 </Button>
               </div>
@@ -359,7 +359,7 @@ class PayPalPayments extends React.Component {
                   </Button>
                   {this.isStepOptional(activeStep) && (
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       color="primary"
                       onClick={this.handleSkip}
                       className={classes.button}
@@ -368,12 +368,11 @@ class PayPalPayments extends React.Component {
                     </Button>
                   )}
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
                     onClick={this.handleNext}
                     className={classes.button}
                   >
-
                     {this.getStepButtonText(activeStep)}
                   </Button>
                 </div>
