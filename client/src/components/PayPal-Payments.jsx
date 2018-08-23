@@ -316,7 +316,7 @@ class PayPalPayments extends React.Component {
     return (
       <TabContainer>
         <div>
-          <h4>Create Express Checkout Payment</h4>
+          <h3>Create Express Checkout Payment</h3>
         </div>
         <div className={classes.root}>
           <Stepper activeStep={activeStep}>
