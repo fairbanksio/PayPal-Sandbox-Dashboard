@@ -41,7 +41,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#FAFAFA' || theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -89,12 +89,12 @@ class IpnList extends React.Component {
           <ExpansionPanel key={key} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.heading}>
-                {item.status == "VERIFIED"
-                  ? <i className="fas fa-check-circle" style={{
-                      color: '#227700',
+                {item.status === "VERIFIED"
+                  ? <i className="far fa-check-circle" style={{
+                      color: '#090',
                       paddingRight: '25px'
                     }}/>
-                  : <i className="fas fa-exclamation-circle" style={{
+                  : <i className="far fa-times-circle" style={{
                       color: '#D8000C',
                       paddingRight: '25px'
                     }}/>
@@ -112,7 +112,7 @@ class IpnList extends React.Component {
                     <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{item.ipnMessage.payment_status}</span>
                     <span style={{ paddingRight: '25px' }}><b>IPN Status: </b>{item.status}</span>
                     <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
-                    <span style={{ paddingRight: '25px' }}><b>Payment Amount: $</b>{item.ipnMessage.mc_gross}</span>
+                    <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{'$' + item.ipnMessage.mc_gross}</span>
                   </Typography>
                   <hr/>
                   <div>
@@ -184,7 +184,10 @@ class TransactionReports extends React.Component {
         } else {
           this.setState({ ipnData: "Error Getting IPN Data" });
         }
-        setTimeout
+        setTimeout(function () {
+          console.log('Checking for new IPNs...')
+          this.getIpnData;
+        }, 3000)
       })
   }
 
@@ -230,7 +233,7 @@ class TransactionReports extends React.Component {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <Typography>
-                  <hr/>
+                  <hr/><br/>
                   <CodeMirror
                     ref='dbCollection'
                     value={JSON.stringify(this.state.ipnData, null, ' ')}
