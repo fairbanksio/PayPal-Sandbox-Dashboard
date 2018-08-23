@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -27,21 +28,39 @@ function TabContainer(props) {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#83c3f7', // Light Blue
+      main: '#3F51B5', // Purple-ish Blue
       contrastText: '#fff', // White
     },
     secondary: {
-      main: '#a2cf6e', // Light Green (for Copied button)
+      main: '#090', // Success Green (for Copied button)
       contrastText: '#fff', // White
     },
   },
 });
 
 const styles = theme => ({
+  layout: {
+    width: 'auto',
+    display: 'block', // IE Sucks
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+  },
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: '#FAFAFA' || theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -129,8 +148,21 @@ class IpnList extends React.Component {
                       onChange={(editor, data, value) => {}}
                       preserveScrollPosition={true}
                     />
+                    <br />
+                    {this.state.copied
+                      ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
+                          <i className="fas fa-check"></i>
+                          <span style={{ marginLeft: 6 }}>Copied</span>
+                        </Button>
+                      : <CopyToClipboard text={JSON.stringify(this.state.ipnMessage, null, ' ')} onCopy={() => this.setState({copied: true})}>
+                          <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
+                            <i className="fas fa-copy"></i>
+                            <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                          </Button>
+                        </CopyToClipboard>
+                    }
                   </div>
-                  <br/>
+                  <br/><hr/>
                   <div>
                     <h4>IPN Postback</h4>
                     <CodeMirror
@@ -145,6 +177,19 @@ class IpnList extends React.Component {
                       onChange={(editor, data, value) => {}}
                       preserveScrollPosition={true}
                     />
+                    <br />
+                    {this.state.copied
+                      ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
+                          <i className="fas fa-check"></i>
+                          <span style={{ marginLeft: 6 }}>Copied</span>
+                        </Button>
+                      : <CopyToClipboard text={JSON.stringify(this.state.ipnPostback, null, ' ')} onCopy={() => this.setState({copied: true})}>
+                          <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
+                            <i className="fas fa-copy"></i>
+                            <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                          </Button>
+                        </CopyToClipboard>
+                    }
                   </div>
                 </div>
               </Typography>
@@ -163,6 +208,7 @@ class TransactionReports extends React.Component {
       ipnData: {},
       ipnCount: null,
       expanded: null,
+      copied: false
     };
     this.getIpnData = this.getIpnData.bind(this);
     this.getIpnCount = this.getIpnCount.bind(this);
@@ -181,13 +227,13 @@ class TransactionReports extends React.Component {
       }).then(data => {
         if(data){
           this.setState({ ipnData: data });
+          setTimeout(function () {
+            console.log(Date.now())
+            this.getIpnData;
+          }, 3000)
         } else {
           this.setState({ ipnData: "Error Getting IPN Data" });
         }
-        setTimeout(function () {
-          console.log('Checking for new IPNs...')
-          this.getIpnData;
-        }, 3000)
       })
   }
 
@@ -204,6 +250,11 @@ class TransactionReports extends React.Component {
       })
   }
 
+  copyJSON = () => {
+    let _this = this;
+    setTimeout(function(){ _this.setState({'copied' : false}); }, 4000);
+  };
+
   componentDidMount() {
     this.getIpnData();
     this.getIpnCount();
@@ -213,46 +264,59 @@ class TransactionReports extends React.Component {
     const { classes } = this.props;
     const { expanded } = this.state;
     return (
-      <TabContainer>
-        <h3>Transaction Reports</h3>
-        {this.state.ipnData.length > 0
-          ?<div>
-            <IpnList {...this.props} ipns={this.state.ipnData}/>
-            <br/>
-            <Typography variant="caption">
-              <i>{'Total Transactions: ' + this.state.ipnCount}</i>
-            </Typography>
-            <br/>
-            <hr/>
-            <br/>
-            <h3>DB Collection:</h3>
-            <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}><b>IPN Collection Data</b></Typography>
-                <Typography className={classes.secondaryHeading}><span style={{fontWeight: 350}}>Raw Database Response</span></Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>
-                  <hr/><br/>
-                  <CodeMirror
-                    ref='dbCollection'
-                    value={JSON.stringify(this.state.ipnData, null, ' ')}
-                    options={{
-                      lineNumbers: true,
-                      mode: { name: 'javascript', json: true },
-                      theme: 'material',
-                      readOnly: 'nocursor' // Nocursor for proper mobile handling
-                    }}
-                    onChange={(editor, data, value) => {}}
-                    preserveScrollPosition={true}
-                  />
-                </Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          </div>
-          :<CircularProgress className={classes.progress} size={50} />
-        }
-      </TabContainer>
+      <MuiThemeProvider theme={theme}>
+        <TabContainer>
+          <h3>Transaction Reports</h3>
+          {this.state.ipnData.length > 0
+            ?<div>
+              <IpnList {...this.props} ipns={this.state.ipnData}/>
+              <br/>
+              <Typography variant="caption">
+                <i>{'Total Transactions: ' + this.state.ipnCount}</i>
+              </Typography>
+              <br/><hr/><br/>
+              <h3>DB Collection:</h3>
+              <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}><b>IPN Collection Data</b></Typography>
+                  <Typography className={classes.secondaryHeading}><span style={{fontWeight: 350}}>Raw Database Response</span></Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    <hr/><br/>
+                    <CodeMirror
+                      ref='dbCollection'
+                      value={JSON.stringify(this.state.ipnData, null, ' ')}
+                      options={{
+                        lineNumbers: true,
+                        mode: { name: 'javascript', json: true },
+                        theme: 'material',
+                        readOnly: 'nocursor' // Nocursor for proper mobile handling
+                      }}
+                      onChange={(editor, data, value) => {}}
+                      preserveScrollPosition={true}
+                    />
+                    <br />
+                    {this.state.copied
+                      ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
+                          <i className="fas fa-check"></i>
+                          <span style={{ marginLeft: 6 }}>Copied</span>
+                        </Button>
+                      : <CopyToClipboard text={JSON.stringify(this.state.ipnData, null, ' ')} onCopy={() => this.setState({copied: true})}>
+                          <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
+                            <i className="fas fa-copy"></i>
+                            <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                          </Button>
+                        </CopyToClipboard>
+                    }
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            </div>
+            :<CircularProgress className={classes.progress} size={50} />
+          }
+        </TabContainer>
+      </MuiThemeProvider>
     );
   }
 }

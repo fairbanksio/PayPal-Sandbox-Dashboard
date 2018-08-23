@@ -21,7 +21,7 @@ function TabContainer(props) {
 const styles = theme => ({
   layout: {
     width: 'auto',
-    display: 'block', // Fix IE11 issue.
+    display: 'block', // IE Sucks
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
@@ -39,10 +39,10 @@ const styles = theme => ({
   },
   avatar: {
     margin: theme.spacing.unit,
-    backgroundColor: '#005EA6' || theme.palette.secondary.main,
+    backgroundColor: '#005EA6',
   },
   form: {
-    width: '100%', // Fix IE11 issue.
+    width: '100%', // IE Sucks
     marginTop: theme.spacing.unit,
   },
   submit: {
@@ -54,25 +54,41 @@ class GettingStarted extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      clientID: "",
-      clientSecret: "",
+      clientID: localStorage.getItem("clientID") || "",
+      clientSecret: localStorage.getItem("clientSecret") || "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleReset = this.handleReset.bind(this);
   }
 
   handleChange(event) {
     // Save text value changes to state
     this.setState({[event.target.id]: event.target.value});
-    console.log('Handling Change')
   }
 
   handleSubmit(event) {
     // Write state to Local Storage on Save
     localStorage.setItem("clientID", this.state.clientID);
     localStorage.setItem("clientSecret", this.state.clientSecret);
+    this.setState({ saved: true })
     event.preventDefault();
-    console.log('Credentials Saved!')
+  }
+
+  handleReset(event) {
+    // Clear out the stored Client ID and Secret
+    localStorage.removeItem("clientID");
+    localStorage.removeItem("clientSecret");
+    event.preventDefault();
+    this.setState({ clientID: "", clientSecret: "", saved: false })
+  }
+
+  componentDidMount() {
+    if(this.state.clientID.length > 0 && this.state.clientSecret.length > 0) {
+      this.setState({ saved: true })
+    }else {
+      this.setState({ saved: false })
+    }
   }
 
   render() {
@@ -86,33 +102,84 @@ class GettingStarted extends React.Component {
               <Avatar className={classes.avatar}>
                 <i class="fab fa-paypal"/>
               </Avatar>
-              <Typography variant="headline">Set Credentials</Typography>
+              <Typography variant="headline">Set API Credentials</Typography>
               <form className={classes.form}>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="clientID">Client ID</InputLabel>
-                  <Input id="clientID" name="clientID" autoComplete="clientID" autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="clientSecret">Secret</InputLabel>
-                  <Input
-                    name="clientSecret"
-                    id="clientSecret"
-                    autoComplete="clientSecret"
-                    onChange={this.handleChange}
-                  />
-                </FormControl>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={this.handleSubmit}
-                >
-                  Save
-                </Button>
+                {this.state.saved === true
+                  ? <FormControl margin="normal" required fullWidth disabled>
+                      <InputLabel htmlFor="clientID">Client ID</InputLabel>
+                      <Input
+                        id="clientID"
+                        name="clientID"
+                        autoComplete="clientID"
+                        autoFocus
+                        onChange={this.handleChange}
+                        value={this.state.clientID.length > 0 ? this.state.clientID : null}
+                      />
+                    </FormControl>
+                  : <FormControl margin="normal" required fullWidth>
+                      <InputLabel htmlFor="clientID">Client ID</InputLabel>
+                      <Input
+                        id="clientID"
+                        name="clientID"
+                        onChange={this.handleChange}
+                        value={this.state.clientID.length > 0 ? this.state.clientID : null}
+                        required={true}
+                      />
+                    </FormControl>
+                }
+                {this.state.saved === true
+                  ? <FormControl margin="normal" required fullWidth disabled>
+                      <InputLabel htmlFor="clientSecret">Secret</InputLabel>
+                      <Input
+                        name="clientSecret"
+                        id="clientSecret"
+                        autoComplete="clientSecret"
+                        onChange={this.handleChange}
+                        required={true}
+                        value={this.state.clientSecret.length > 0 ? this.state.clientSecret : null}
+                      />
+                    </FormControl>
+                  : <FormControl margin="normal" required fullWidth>
+                      <InputLabel htmlFor="clientSecret">Secret</InputLabel>
+                      <Input
+                        name="clientSecret"
+                        id="clientSecret"
+                        autoComplete="clientSecret"
+                        onChange={this.handleChange}
+                        required={true}
+                        value={this.state.clientSecret.length > 0 ? this.state.clientSecret : null}
+                        required={true}
+                      />
+                    </FormControl>
+                }
+                {this.state.saved === true
+                  ? <Button
+                      type="submit"
+                      fullWidth
+                      variant="outlined"
+                      color="secondary"
+                      className={classes.submit}
+                      onClick={this.handleReset}
+                    >
+                      Reset
+                    </Button>
+                  : <Button
+                      type="submit"
+                      fullWidth
+                      variant="outlined"
+                      color="primary"
+                      className={classes.submit}
+                      onClick={this.handleSubmit}
+                    >
+                      Save
+                    </Button>
+                }
               </form>
             </Paper>
+            {this.state.saved === true
+              ? <a href='/payments'>Get Started --></a>
+              : null
+            }
           </main>
         </React.Fragment>
       </TabContainer>

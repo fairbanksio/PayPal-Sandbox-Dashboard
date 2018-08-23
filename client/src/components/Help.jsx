@@ -62,7 +62,7 @@ class Help extends React.Component {
     return (
       <TabContainer>
         <div className={classes.root}>
-          <h4>Help & FAQ's</h4>
+          <h3>Help & FAQ's</h3>
           <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.heading}>Dashboard FAQs</Typography>
@@ -84,8 +84,18 @@ class Help extends React.Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus, varius pulvinar
-                diam eros in elit. Pellentesque convallis laoreet laoreet.
+                To get started, with test payments in the PayPal Sandbox, you will need to provide a <pre>Client ID</pre> and <pre>Secret</pre> for the PayPal REST SDK.
+                <b>These details are not saved on the server at any point</b>, but stored within the browser and securely transmitted between you and PayPal.
+                For help getting setup, please checkout the setup instructions below:
+                <ul>
+                  <li>Create a PayPal Developer account at <a href='https://developer.paypal.com/' target='_blank'>Developer.PayPal.com</a></li>
+                  <li>First, create a new Sandbox merchant account. Be sure to create a Business account and might as well pre-fill it with test money (we'll use it for testing).</li>
+                  <li>Once signed in, navigate to <i>My Apps & Credentials</i> and Create a New REST API App</li>
+                  <li>Provide app details such as the name and the associated account. Once done, click <i>Create App</i></li>
+                  <li>Take note of the <pre>Client ID</pre> & <pre>Secret</pre> and store them somewhere safe. These are the keys to paymenst with your Sandbox PayPal account!</li>
+                  <li>Use the newly generated credentials on the <a href='/getting-started' target='_blank'>Getting Started</a> page.</li>
+                  <li>Finally, <a href='/sale-payments' target='_blank'>go test some payments!</a></li>
+                </ul>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
