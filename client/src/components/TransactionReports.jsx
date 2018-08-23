@@ -41,7 +41,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#FAFAFA' || theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -89,7 +89,7 @@ class IpnList extends React.Component {
           <ExpansionPanel key={key} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.heading}>
-                {item.status == "VERIFIED"
+                {item.status === "VERIFIED"
                   ? <i className="far fa-check-circle" style={{
                       color: '#090',
                       paddingRight: '25px'
