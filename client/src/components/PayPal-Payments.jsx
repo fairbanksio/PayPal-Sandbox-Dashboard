@@ -123,10 +123,6 @@ class PayPalPayments extends React.Component {
       case 1:
         this.createPayment();
         console.log('create payment');
-        this.setState({
-          activeStep: activeStep + 1,
-          skipped,
-        });
         break;
 
       case 2:
