@@ -8,6 +8,18 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {UnControlled as CodeMirror} from 'react-codemirror2';
+import moment from 'moment';
+require('codemirror/mode/javascript/javascript');
+require('codemirror/lib/codemirror.css');
+require('codemirror/theme/material.css');
+
 
 
 function TabContainer(props) {
@@ -40,8 +52,38 @@ const styles = theme => ({
   instructions: {
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
-  }
+  },
+  layout: {
+    width: 'auto',
+    display: 'block', // Fix IE11 issue.
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 'auto',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  paper: {
+    marginTop: theme.spacing.unit,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+  },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: '#005EA6' || theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE11 issue.
+    marginTop: theme.spacing.unit,
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3,
+  },
 });
+
 
 function getSteps() {
 return ['Define API credentials', 'Create payment', 'Approve payment', 'Execute payment', 'Payment complete'];
@@ -181,8 +223,9 @@ class PayPalPayments extends React.Component {
       this.setState({activeStep: 0});
       localStorage.setItem("step", 0);
     } else {
-      this.setState({activeStep: 1});
+      this.setState({activeStep: 1, pData: null});
       localStorage.setItem("step", 1);
+      localStorage.setItem("pData", null);
     }
   }
 
@@ -196,6 +239,7 @@ class PayPalPayments extends React.Component {
       paymentStatus: "",
       activeStep: 0,
       skipped: new Set(),
+      expanded: "panel1",
     };
     this.handleChange = this.handleChange.bind(this);
     this.createPayment = this.createPayment.bind(this);
@@ -205,6 +249,12 @@ class PayPalPayments extends React.Component {
     // Save to Local Storage
     localStorage.setItem(event.target.id, event.target.value);
   }
+
+  handlePanel = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+    });
+  };
 
   getStepButtonText(step){
     switch (step) {
@@ -234,13 +284,12 @@ class PayPalPayments extends React.Component {
       .then(response => {
           return response.json()
         }).then(data => {
-          console.log(data);
           if(data.response){
-            this.setState({pData:JSON.stringify(data, null, ' ')});
+            this.setState({pData:data});
           } else {
             //this.setState({paymentStatus:"Redirecting for approval",activeStep: 2});
             //this.setState({paymentStatus:JSON.stringify(data.response)});
-            this.setState({pData:JSON.stringify(data, null, ' ')});
+            this.setState({pData:data});
             this.setState({activeStep: 2});
             localStorage.setItem("step", 2);
             localStorage.setItem("pRedirect", data.links[1].href);
@@ -252,39 +301,13 @@ class PayPalPayments extends React.Component {
   }
 
   approvePayment() {
-    localStorage.setItem("pData",this.state.pData);
+    localStorage.setItem("pData",JSON.stringify(this.state.pData));
     localStorage.setItem("step",3);
     window.location = localStorage.getItem("pRedirect");
 
   }
 
   componentWillMount(){
-
-  }
-
-  executePayment(){
-    var apiKey = localStorage.getItem("clientID")
-    var apiSecret = localStorage.getItem("clientSecret")
-    var paymentId = localStorage.getItem("paymentId")
-    var payerId = localStorage.getItem("payerId")
-
-    var url = 'https://'+ serverHost + '/api/execute-payment?paymentId=' + paymentId + '&PayerID=' + payerId + '&APIKey=' + apiKey + '&APISecret=' + apiSecret
-    fetch(url)
-    .then(response => {
-        return response.json()
-      }).then(data => {
-        console.log(data);
-        if(data.response){
-          this.setState({pData:JSON.stringify(data, null, ' ')});
-        } else {
-          this.setState({activeStep: 4});
-          this.setState({pData:JSON.stringify(data, null, ' ')});
-        }
-      })
-
-  }
-
-  componentDidMount(){
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
     var urlParams = qs.parse(this.props.location.search.slice(1));
@@ -299,93 +322,165 @@ class PayPalPayments extends React.Component {
       localStorage.setItem("paymentId", urlParams.paymentId);
       localStorage.setItem("payerId", urlParams.PayerID);
       this.setState({activeStep: 3});
-      this.setState({pData:localStorage.getItem("pData")})
+      this.setState({pData:JSON.parse(localStorage.getItem("pData"))})
     }
+  }
 
+  executePayment(){
+    var apiKey = localStorage.getItem("clientID")
+    var apiSecret = localStorage.getItem("clientSecret")
+    var paymentId = localStorage.getItem("paymentId")
+    var payerId = localStorage.getItem("payerId")
 
-
-
+    var url = 'https://'+ serverHost + '/api/execute-payment?paymentId=' + paymentId + '&PayerID=' + payerId + '&APIKey=' + apiKey + '&APISecret=' + apiSecret
+    fetch(url)
+    .then(response => {
+        return response.json()
+      }).then(data => {
+        if(data.response){
+          this.setState({pData:data});
+        } else {
+          this.setState({activeStep: 4});
+          this.setState({pData:data});
+        }
+      })
 
   }
+
+
 
   render() {
     const { classes } = this.props;
     const steps = getSteps();
     const { activeStep } = this.state;
-    const { pData } = this.state;
+    var pData = this.state.pData;
+    var pDataStringified = JSON.stringify(pData, null, ' ');
+    const { expanded } = this.state;
+
     return (
       <TabContainer>
         <div>
           <h3>Create Express Checkout Payment</h3>
         </div>
-        <div className={classes.root}>
-          <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => {
-              const props = {};
-              const labelProps = {};
-              if (this.isStepOptional(index)) {
-                labelProps.optional = <Typography variant="caption">Optional</Typography>;
-              }
-              if (this.isStepSkipped(index)) {
-                props.completed = false;
-              }
-              return (
-                <Step key={label} {...props}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          <div>
-            {activeStep === steps.length ? (
-              <div>
-                <Typography className={classes.instructions}>
-                  All steps completed - you&quot;re finished
-                </Typography>
-                <Button variant="outlined" onClick={this.handleReset} className={classes.button}>
-                  Reset
-                </Button>
-              </div>
-            ) : (
-              <div>
-                <Typography className={classes.instructions}><StepContent {...this.props} step={activeStep} /></Typography>
+        <React.Fragment>
+          <CssBaseline />
+          <main className={classes.layout}>
+            <Paper className={classes.paper}>
+              <div className={classes.root}>
+                <Stepper activeStep={activeStep}>
+                  {steps.map((label, index) => {
+                    const props = {};
+                    const labelProps = {};
+                    if (this.isStepOptional(index)) {
+                      labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                    }
+                    if (this.isStepSkipped(index)) {
+                      props.completed = false;
+                    }
+                    return (
+                      <Step key={label} {...props}>
+                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      </Step>
+                    );
+                  })}
+                </Stepper>
                 <div>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={this.handleBack}
-                    className={classes.button}
-                  >
-                    Back
-                  </Button>
-                  {this.isStepOptional(activeStep) && (
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={this.handleSkip}
-                      className={classes.button}
-                    >
-                      Skip
-                    </Button>
+                  {activeStep === steps.length ? (
+                    <div>
+                      <Typography className={classes.instructions}>
+                        All steps completed - you&quot;re finished
+                      </Typography>
+                      <Button variant="outlined" onClick={this.handleReset} className={classes.button}>
+                        Reset
+                      </Button>
+                    </div>
+                  ) : (
+                    <div>
+                      <Typography className={classes.instructions}><StepContent {...this.props} step={activeStep} /></Typography>
+                      <div>
+                        <Button
+                          disabled={activeStep === 0}
+                          onClick={this.handleBack}
+                          className={classes.button}
+                        >
+                          Back
+                        </Button>
+                        {this.isStepOptional(activeStep) && (
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={this.handleSkip}
+                            className={classes.button}
+                          >
+                            Skip
+                          </Button>
+                        )}
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={this.handleNext}
+                          className={classes.button}
+                        >
+                          {this.getStepButtonText(activeStep)}
+                        </Button>
+                      </div>
+                    </div>
                   )}
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={this.handleNext}
-                    className={classes.button}
-                  >
-                    {this.getStepButtonText(activeStep)}
-                  </Button>
                 </div>
               </div>
+            </Paper>
+
+            {pData ? (
+              <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handlePanel('panel1')}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>
+                    <i className="far fa-check-circle" style={{
+                          color: '#090',
+                          paddingRight: '25px'
+                        }}/>
+                    <span style={{fontWeight: 375}}><b>Payment ID: </b>{pData.id}</span>
+                  </Typography>
+                  <Typography className={classes.secondaryHeading}>
+                    <span style={{fontWeight: 350}}>{moment(pData.create_time).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    <div style={{ width: 'auto'}}>
+                      <Typography variant="caption">
+                        <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{pData.state}</span>
+                        <span style={{ paddingRight: '25px' }}><b>Payment Intent: </b>{pData.intent}</span>
+                        <span style={{ paddingRight: '25px' }}><b>Payment Method: </b>{pData.payer.payment_method}</span>
+                        <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{pData.transactions[0].amount.total}</span>
+                      </Typography>
+                      <hr/>
+                      <div>
+                        <h4>Payment Details</h4>
+                        <CodeMirror
+                          ref='ipnMessage'
+                          value={pDataStringified}
+                          options={{
+                            lineNumbers: true,
+                            mode: { name: 'javascript', json: true },
+                            theme: 'material',
+                            readOnly: 'nocursor' // Nocursor for proper mobile handling
+                          }}
+                          onChange={(editor, pDataStringified, value) => {}}
+                          preserveScrollPosition={true}
+                        />
+                      </div>
+                    </div>
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            ):(
+              <Typography className={classes.heading}>
+                <span style={{ paddingRight: '25px' }}><b> No Payment Created Yet</b></span>
+              </Typography>
             )}
-          </div>
-        </div>
-        <hr/>
-        <Typography component="div" style={{ padding: 8 * 3 }}>
-          <pre>
-            {pData}
-          </pre>
-        </Typography>
+
+          </main>
+        </React.Fragment>
       </TabContainer>
     );
   }
