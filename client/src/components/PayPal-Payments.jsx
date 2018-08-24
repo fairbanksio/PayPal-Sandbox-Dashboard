@@ -273,6 +273,10 @@ class PayPalPayments extends React.Component {
   createPayment() {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
+    var itemName = localStorage.getItem("pItemName")
+    var itemCost = localStorage.getItem("pItemCost")
+    console.log(itemName);
+    console.log(itemCost);
     var redirectURL = 'https://'+ serverHost + '/payments'
     var create_payment_json = {
 			"intent": "sale",
@@ -286,16 +290,16 @@ class PayPalPayments extends React.Component {
 			"transactions": [{
 					"item_list": {
 							"items": [{
-									"name": "item",
+									"name": itemName || "Default Item",
 									"sku": "item",
-									"price": "1.00",
+									"price": itemCost || "2.00",
 									"currency": "USD",
 									"quantity": 1
 							}]
 					},
 					"amount": {
 							"currency": "USD",
-							"total": "1.00"
+							"total": itemCost || "2.00"
 					},
 					"description": "This is the payment description."
 			}]
@@ -320,7 +324,9 @@ class PayPalPayments extends React.Component {
         return response.json()
       }).then(data => {
         if(data.response){
-          this.setState({pData:data});
+          //better error handling needed here.
+          console.log(data)
+          //this.setState({pData:data});
         } else {
           //this.setState({paymentStatus:"Redirecting for approval",activeStep: 2});
           //this.setState({paymentStatus:JSON.stringify(data.response)});
@@ -361,7 +367,8 @@ class PayPalPayments extends React.Component {
     var apiSecret = localStorage.getItem("clientSecret")
     var paymentId = localStorage.getItem("paymentId")
     var payerId = localStorage.getItem("payerId")
-
+    console.log(payerId);
+    console.log(paymentId);
     var url = 'https://'+ serverHost + '/api/execute-payment'
     var data = {apiCredentials: {key:apiKey, secret:apiSecret}, paymentId: paymentId, PayerID:payerId}
 
@@ -382,7 +389,9 @@ class PayPalPayments extends React.Component {
         return response.json()
       }).then(data => {
         if(data.response){
-          this.setState({pData:data});
+          //better error handling needed here.
+          console.log(data)
+          //this.setState({pData:data});
         } else {
           this.setState({activeStep: 3});
           this.setState({pData:data});
