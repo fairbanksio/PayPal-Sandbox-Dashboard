@@ -9,6 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { Link } from "react-router-dom";
 
 function TabContainer(props) {
   return (
@@ -39,7 +40,7 @@ const styles = theme => ({
   },
   avatar: {
     margin: theme.spacing.unit,
-    backgroundColor: '#005EA6',
+    backgroundColor: '#005EA6', // PayPal Blue
   },
   form: {
     width: '100%', // IE Sucks
@@ -176,8 +177,13 @@ class GettingStarted extends React.Component {
                 }
               </form>
             </Paper>
+            <br />
             {this.state.saved === true
-              ? <a href='/payments'>Get Started --></a>
+              ? <Link to='/payments' style={{ color: '#9E9E9E', textDecoration: 'none', display: 'flex',
+                  flexDirection: 'column', alignItems: 'center' }}>
+                  <span style={{ fontSize: '1.3em', marginBottom: '8px', color: '#9E9E9E', textDecoration: 'none' }}>Let's Get Started!</span>
+                  <i className="far fa-lg fa-arrow-alt-circle-right"/>
+                </Link>
               : null
             }
           </main>

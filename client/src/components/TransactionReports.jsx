@@ -227,10 +227,6 @@ class TransactionReports extends React.Component {
       }).then(data => {
         if(data){
           this.setState({ ipnData: data });
-          setTimeout(function () {
-            console.log(Date.now())
-            this.getIpnData;
-          }, 3000)
         } else {
           this.setState({ ipnData: "Error Getting IPN Data" });
         }
@@ -258,6 +254,12 @@ class TransactionReports extends React.Component {
   componentDidMount() {
     this.getIpnData();
     this.getIpnCount();
+    this.timer = setInterval(()=> this.getIpnData(), 5000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    this.timer = null;
   }
 
   render() {
