@@ -54,10 +54,10 @@ app.post('/api/execute-payment', function(req, res){
 	var paymentId = req.body.paymentId;
 	var apiKey = req.body.apiCredentials.key
 	var apiSecret = req.body.apiCredentials.secret
-	console.log("User has approved the payment");
+
 	executePayment(apiKey, apiSecret, payerId, paymentId, function(paymentResults){
-		//console.log(payment)
 		res.json(paymentResults);
+		console.log("User has approved the payment");
 	})
 })
 
@@ -285,13 +285,7 @@ function executePayment(apiKey, apiSecret, payerId, paymentId, callback){
 		});
 
 		var execute_payment_json = {
-				"payer_id": payerId,
-				"transactions": [{
-						"amount": {
-								"currency": "USD",
-								"total": "1.00"
-						}
-				}]
+				"payer_id": payerId
 		};
 		paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
 				if (error) {
