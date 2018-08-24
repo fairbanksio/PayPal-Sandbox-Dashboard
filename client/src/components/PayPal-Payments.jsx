@@ -222,8 +222,6 @@ class PayPalPayments extends React.Component {
   };
 
   handleReset = () => {
-    var apiKey = localStorage.getItem("clientID")
-    var apiSecret = localStorage.getItem("clientSecret")
     this.setState({activeStep: 0, pData: null});
     localStorage.setItem("step", 0);
     localStorage.setItem("pData", null);
@@ -275,28 +273,65 @@ class PayPalPayments extends React.Component {
   createPayment() {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
-    if (apiKey === "" && apiSecret === ""){
-      //this.setState({paymentStatus:"API Credentials not defined"});
-    } else {
-      var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments'
-      fetch(url)
-      .then(response => {
-          return response.json()
-        }).then(data => {
-          if(data.response){
-            this.setState({pData:data});
-          } else {
-            //this.setState({paymentStatus:"Redirecting for approval",activeStep: 2});
-            //this.setState({paymentStatus:JSON.stringify(data.response)});
-            this.setState({pData:data});
-            this.setState({activeStep: 1});
-            localStorage.setItem("step", 1);
-            localStorage.setItem("pRedirect", data.links[1].href);
-            //window.location = data.links[1].href;
-          }
-        })
-    }
-    //event.preventDefault();
+    var redirectURL = 'https://'+ serverHost + '/payments'
+    var create_payment_json = {
+			"intent": "sale",
+			"payer": {
+					"payment_method": "paypal"
+			},
+			"redirect_urls": {
+					"return_url": redirectURL,
+					"cancel_url": redirectURL
+			},
+			"transactions": [{
+					"item_list": {
+							"items": [{
+									"name": "item",
+									"sku": "item",
+									"price": "1.00",
+									"currency": "USD",
+									"quantity": 1
+							}]
+					},
+					"amount": {
+							"currency": "USD",
+							"total": "1.00"
+					},
+					"description": "This is the payment description."
+			}]
+		};
+    var data = {payment:create_payment_json, apiCredentials: {key:apiKey, secret:apiSecret}, redirectUrl: redirectURL}
+    var url = 'https://'+ serverHost + '/api/create-payment'
+
+    fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, same-origin, *omit
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      redirect: "follow", // manual, *follow, error
+      referrer: "no-referrer", // no-referrer, *client
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+    .then(response => {
+        return response.json()
+      }).then(data => {
+        if(data.response){
+          this.setState({pData:data});
+        } else {
+          //this.setState({paymentStatus:"Redirecting for approval",activeStep: 2});
+          //this.setState({paymentStatus:JSON.stringify(data.response)});
+          this.setState({pData:data});
+          this.setState({activeStep: 1});
+          localStorage.setItem("step", 1);
+          localStorage.setItem("pRedirect", data.links[1].href);
+          //window.location = data.links[1].href;
+        }
+      })
+
   }
 
   approvePayment() {
@@ -307,8 +342,6 @@ class PayPalPayments extends React.Component {
   }
 
   componentWillMount(){
-    var apiKey = localStorage.getItem("clientID")
-    var apiSecret = localStorage.getItem("clientSecret")
     var urlParams = qs.parse(this.props.location.search.slice(1));
 
 
@@ -329,8 +362,22 @@ class PayPalPayments extends React.Component {
     var paymentId = localStorage.getItem("paymentId")
     var payerId = localStorage.getItem("payerId")
 
-    var url = 'https://'+ serverHost + '/api/execute-payment?paymentId=' + paymentId + '&PayerID=' + payerId + '&APIKey=' + apiKey + '&APISecret=' + apiSecret
-    fetch(url)
+    var url = 'https://'+ serverHost + '/api/execute-payment'
+    var data = {apiCredentials: {key:apiKey, secret:apiSecret}, paymentId: paymentId, PayerID:payerId}
+
+    fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, same-origin, *omit
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      redirect: "follow", // manual, *follow, error
+      referrer: "no-referrer", // no-referrer, *client
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
     .then(response => {
         return response.json()
       }).then(data => {

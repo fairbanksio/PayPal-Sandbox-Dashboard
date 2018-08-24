@@ -18,20 +18,23 @@ connection.once('open', function () { });
 var serverHost = process.env.SERVER_HOST;
 var app = express();
 app.use(bodyParser.urlencoded({	extended: false }));
+app.use(bodyParser.json());
 
 // Define path for react-app client front end
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Create Payment
-app.get('/api/create-payment', function(req, res){
-	var apiKey = req.query.APIKey;
-	var apiSecret = req.query.APISecret;
-	var redirectURL = req.query.RedirectURL;
-	createPayment(apiKey, apiSecret, redirectURL, function(paymentResults){
-		//redirect to our approval handler to execute payment
+app.post('/api/create-payment', function(req, res){
+	var apiKey = req.body.apiCredentials.key
+	var apiSecret = req.body.apiCredentials.secret
+	var payment = req.body.payment
+	var redirectURL = req.body.redirectUrl
+
+	createPayment(apiKey, apiSecret, redirectURL, payment, function(paymentResults){
 		res.json(paymentResults)
 		console.log("Payment data sent back to user")
 	});
+
 })
 
 // Create Billing Agreement
@@ -46,15 +49,15 @@ app.get('/api/create-agreement', function(req, res){
 })
 
 // Execute Payment
-app.get('/api/execute-payment', function(req, res){
-	var payerId = req.query.PayerID;
-	var paymentId = req.query.paymentId;
-	var apiKey = req.query.APIKey;
-	var apiSecret = req.query.APISecret;
+app.post('/api/execute-payment', function(req, res){
+	var payerId = req.body.PayerID;
+	var paymentId = req.body.paymentId;
+	var apiKey = req.body.apiCredentials.key
+	var apiSecret = req.body.apiCredentials.secret
 	console.log("User has approved the payment");
-	executePayment(apiKey, apiSecret, payerId, paymentId, function(payment){
+	executePayment(apiKey, apiSecret, payerId, paymentId, function(paymentResults){
 		//console.log(payment)
-		res.json(payment);
+		res.json(paymentResults);
 	})
 })
 
@@ -88,7 +91,7 @@ app.get('/api/ipnCount', function(req, res){
 	});
 })
 
-function createPayment(apiKey, apiSecret, redirectURL, callback){
+function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 	if(apiKey && apiSecret){
 		// Configure PayPal SDK
 		paypal.configure({
@@ -100,34 +103,9 @@ function createPayment(apiKey, apiSecret, redirectURL, callback){
 			}
 		});
 
-		var create_payment_json = {
-			"intent": "sale",
-			"payer": {
-					"payment_method": "paypal"
-			},
-			"redirect_urls": {
-					"return_url": redirectURL,
-					"cancel_url": redirectURL
-			},
-			"transactions": [{
-					"item_list": {
-							"items": [{
-									"name": "item",
-									"sku": "item",
-									"price": "1.00",
-									"currency": "USD",
-									"quantity": 1
-							}]
-					},
-					"amount": {
-							"currency": "USD",
-							"total": "1.00"
-					},
-					"description": "This is the payment description."
-			}]
-		};
 
-		paypal.payment.create(create_payment_json, function (error, payment) {
+
+		paypal.payment.create(paymentJSON, function (error, payment) {
 			if (error) {
 					callback(error)
 					//throw error;
