@@ -36,7 +36,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: '#FAFAFA' || theme.palette.background.paper,
+    backgroundColor: '#FFFFFF' || theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -82,11 +82,22 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexShrink: 0,
+    paddingRight: theme.spacing.unit * 3,
+
+  },
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+    paddingRight: theme.spacing.unit * 3,
+  },
 });
 
 
 function getSteps() {
-return ['Define API credentials', 'Create payment', 'Approve payment', 'Execute payment', 'Payment complete'];
+return ['Create payment', 'Approve payment', 'Execute payment', 'Payment complete'];
 }
 
 class StepContent extends React.Component{
@@ -101,9 +112,8 @@ class StepContent extends React.Component{
     var { step } = this.props
 
     switch (step) {
+
       case 0:
-        return 'Please define your API credentials';
-      case 1:
         return (
           <div>
             Please define payment details <br/>
@@ -128,11 +138,11 @@ class StepContent extends React.Component{
             />
           </div>
         );
-      case 2:
+      case 1:
       return 'Approve the payment that was just created';
-      case 3:
+      case 2:
       return 'Execute the payment';
-      case 4:
+      case 3:
       return 'Thats it! Payment has been completed succesfully.';
       default:
       return 'Unknown step';
@@ -155,29 +165,24 @@ class PayPalPayments extends React.Component {
     }
 
     switch(activeStep){
-      case 0:
-        this.setState({
-          activeStep: activeStep + 1,
-          skipped,
-        });
-        break;
 
-      case 1:
+
+      case 0:
         this.createPayment();
         console.log('create payment');
         break;
 
-      case 2:
+      case 1:
         this.approvePayment();
         console.log('approve payment');
         break;
 
-      case 3:
+      case 2:
         this.executePayment();
         console.log('execute payment');
 
         break;
-      case 4:
+      case 3:
         console.log('finish payment');
         this.setState({
           activeStep: activeStep + 1,
@@ -217,16 +222,9 @@ class PayPalPayments extends React.Component {
   };
 
   handleReset = () => {
-    var apiKey = localStorage.getItem("clientID")
-    var apiSecret = localStorage.getItem("clientSecret")
-    if(apiKey === "" | apiSecret === ""){
-      this.setState({activeStep: 0});
-      localStorage.setItem("step", 0);
-    } else {
-      this.setState({activeStep: 1, pData: null});
-      localStorage.setItem("step", 1);
-      localStorage.setItem("pData", null);
-    }
+    this.setState({activeStep: 0, pData: null});
+    localStorage.setItem("step", 0);
+    localStorage.setItem("pData", null);
   }
 
   isStepSkipped(step) {
@@ -258,15 +256,14 @@ class PayPalPayments extends React.Component {
 
   getStepButtonText(step){
     switch (step) {
+
       case 0:
-        return 'Save Credentials';
-      case 1:
         return 'Create Payment'
-      case 2:
+      case 1:
       return 'Approve Payment';
-      case 3:
+      case 2:
       return 'Execute Payment';
-      case 4:
+      case 3:
       return 'Finish Payment';
       default:
       return 'Unknown';
@@ -276,52 +273,91 @@ class PayPalPayments extends React.Component {
   createPayment() {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
-    if (apiKey === "" && apiSecret === ""){
-      //this.setState({paymentStatus:"API Credentials not defined"});
-    } else {
-      var url = 'https://'+ serverHost + '/api/create-payment?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/payments'
-      fetch(url)
-      .then(response => {
-          return response.json()
-        }).then(data => {
-          if(data.response){
-            this.setState({pData:data});
-          } else {
-            //this.setState({paymentStatus:"Redirecting for approval",activeStep: 2});
-            //this.setState({paymentStatus:JSON.stringify(data.response)});
-            this.setState({pData:data});
-            this.setState({activeStep: 2});
-            localStorage.setItem("step", 2);
-            localStorage.setItem("pRedirect", data.links[1].href);
-            //window.location = data.links[1].href;
-          }
-        })
-    }
-    //event.preventDefault();
+    var itemName = localStorage.getItem("pItemName")
+    var itemCost = localStorage.getItem("pItemCost")
+    console.log(itemName);
+    console.log(itemCost);
+    var redirectURL = 'https://'+ serverHost + '/payments'
+    var create_payment_json = {
+			"intent": "sale",
+			"payer": {
+					"payment_method": "paypal"
+			},
+			"redirect_urls": {
+					"return_url": redirectURL,
+					"cancel_url": redirectURL
+			},
+			"transactions": [{
+					"item_list": {
+							"items": [{
+									"name": itemName || "Default Item",
+									"sku": "item",
+									"price": itemCost || "2.00",
+									"currency": "USD",
+									"quantity": 1
+							}]
+					},
+					"amount": {
+							"currency": "USD",
+							"total": itemCost || "2.00"
+					},
+					"description": "This is the payment description."
+			}]
+		};
+    var data = {payment:create_payment_json, apiCredentials: {key:apiKey, secret:apiSecret}, redirectUrl: redirectURL}
+    var url = 'https://'+ serverHost + '/api/create-payment'
+
+    fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, same-origin, *omit
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      redirect: "follow", // manual, *follow, error
+      referrer: "no-referrer", // no-referrer, *client
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+    .then(response => {
+        return response.json()
+      }).then(data => {
+        if(data.response){
+          //better error handling needed here.
+          console.log(data)
+          //this.setState({pData:data});
+        } else {
+          //this.setState({paymentStatus:"Redirecting for approval",activeStep: 2});
+          //this.setState({paymentStatus:JSON.stringify(data.response)});
+          this.setState({pData:data});
+          this.setState({activeStep: 1});
+          localStorage.setItem("step", 1);
+          localStorage.setItem("pRedirect", data.links[1].href);
+          //window.location = data.links[1].href;
+        }
+      })
+
   }
 
   approvePayment() {
     localStorage.setItem("pData",JSON.stringify(this.state.pData));
-    localStorage.setItem("step",3);
+    localStorage.setItem("step",2);
     window.location = localStorage.getItem("pRedirect");
 
   }
 
   componentWillMount(){
-    var apiKey = localStorage.getItem("clientID")
-    var apiSecret = localStorage.getItem("clientSecret")
     var urlParams = qs.parse(this.props.location.search.slice(1));
 
-    if(apiKey === "" | apiSecret === ""){
-      this.setState({activeStep: 0});
-    } else {
-      this.setState({activeStep: 1});
-    }
+
+    this.setState({activeStep: 0});
+
 
     if (urlParams.paymentId && urlParams.PayerID) {
       localStorage.setItem("paymentId", urlParams.paymentId);
       localStorage.setItem("payerId", urlParams.PayerID);
-      this.setState({activeStep: 3});
+      this.setState({activeStep: 2});
       this.setState({pData:JSON.parse(localStorage.getItem("pData"))})
     }
   }
@@ -331,16 +367,33 @@ class PayPalPayments extends React.Component {
     var apiSecret = localStorage.getItem("clientSecret")
     var paymentId = localStorage.getItem("paymentId")
     var payerId = localStorage.getItem("payerId")
+    console.log(payerId);
+    console.log(paymentId);
+    var url = 'https://'+ serverHost + '/api/execute-payment'
+    var data = {apiCredentials: {key:apiKey, secret:apiSecret}, paymentId: paymentId, PayerID:payerId}
 
-    var url = 'https://'+ serverHost + '/api/execute-payment?paymentId=' + paymentId + '&PayerID=' + payerId + '&APIKey=' + apiKey + '&APISecret=' + apiSecret
-    fetch(url)
+    fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, same-origin, *omit
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      redirect: "follow", // manual, *follow, error
+      referrer: "no-referrer", // no-referrer, *client
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
     .then(response => {
         return response.json()
       }).then(data => {
         if(data.response){
-          this.setState({pData:data});
+          //better error handling needed here.
+          console.log(data)
+          //this.setState({pData:data});
         } else {
-          this.setState({activeStep: 4});
+          this.setState({activeStep: 3});
           this.setState({pData:data});
         }
       })
@@ -360,7 +413,7 @@ class PayPalPayments extends React.Component {
     return (
       <TabContainer>
         <div>
-          <h3>Create Express Checkout Payment</h3>
+          <h4>Create Express Checkout Payment</h4>
         </div>
         <React.Fragment>
           <CssBaseline />
@@ -384,7 +437,7 @@ class PayPalPayments extends React.Component {
                     );
                   })}
                 </Stepper>
-                <div>
+                <div className={classes.root}>
                   {activeStep === steps.length ? (
                     <div>
                       <Typography className={classes.instructions}>
@@ -440,15 +493,16 @@ class PayPalPayments extends React.Component {
                         }}/>
                     <span style={{fontWeight: 375}}><b>Payment ID: </b>{pData.id}</span>
                   </Typography>
+                  <Typography className={classes.heading}>
+                    <span style={{fontWeight: 375}}><b>Status: </b>{pData.state}</span>
+                  </Typography>
                   <Typography className={classes.secondaryHeading}>
                     <span style={{fontWeight: 350}}>{moment(pData.create_time).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>
                   </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <Typography>
-                    <div style={{ width: 'auto'}}>
                       <Typography variant="caption">
-                        <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{pData.state}</span>
                         <span style={{ paddingRight: '25px' }}><b>Payment Intent: </b>{pData.intent}</span>
                         <span style={{ paddingRight: '25px' }}><b>Payment Method: </b>{pData.payer.payment_method}</span>
                         <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{pData.transactions[0].amount.total}</span>
@@ -469,14 +523,12 @@ class PayPalPayments extends React.Component {
                           preserveScrollPosition={true}
                         />
                       </div>
-                    </div>
+
                   </Typography>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ):(
-              <Typography className={classes.heading}>
-                <span style={{ paddingRight: '25px' }}><b> No Payment Created Yet</b></span>
-              </Typography>
+              null
             )}
 
           </main>
