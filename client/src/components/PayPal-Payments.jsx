@@ -20,8 +20,6 @@ require('codemirror/mode/javascript/javascript');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 
-
-
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -95,9 +93,8 @@ const styles = theme => ({
   },
 });
 
-
 function getSteps() {
-return ['Create payment', 'Approve payment', 'Execute payment', 'Payment complete'];
+  return ['Create payment', 'Approve payment', 'Execute payment', 'Payment complete'];
 }
 
 class StepContent extends React.Component{
@@ -165,8 +162,6 @@ class PayPalPayments extends React.Component {
     }
 
     switch(activeStep){
-
-
       case 0:
         this.createPayment();
         console.log('create payment');
@@ -193,8 +188,6 @@ class PayPalPayments extends React.Component {
       default:
         break;
     }
-
-
   };
 
   handleBack = () => {
@@ -256,7 +249,6 @@ class PayPalPayments extends React.Component {
 
   getStepButtonText(step){
     switch (step) {
-
       case 0:
         return 'Create Payment'
       case 1:
@@ -337,23 +329,17 @@ class PayPalPayments extends React.Component {
           //window.location = data.links[1].href;
         }
       })
-
   }
 
   approvePayment() {
     localStorage.setItem("pData",JSON.stringify(this.state.pData));
     localStorage.setItem("step",2);
     window.location = localStorage.getItem("pRedirect");
-
   }
 
   componentWillMount(){
     var urlParams = qs.parse(this.props.location.search.slice(1));
-
-
     this.setState({activeStep: 0});
-
-
     if (urlParams.paymentId && urlParams.PayerID) {
       localStorage.setItem("paymentId", urlParams.paymentId);
       localStorage.setItem("payerId", urlParams.PayerID);
@@ -397,10 +383,7 @@ class PayPalPayments extends React.Component {
           this.setState({pData:data});
         }
       })
-
   }
-
-
 
   render() {
     const { classes } = this.props;
@@ -409,7 +392,6 @@ class PayPalPayments extends React.Component {
     var pData = this.state.pData;
     var pDataStringified = JSON.stringify(pData, null, ' ');
     const { expanded } = this.state;
-
     return (
       <TabContainer>
         <div>
@@ -482,7 +464,6 @@ class PayPalPayments extends React.Component {
                 </div>
               </div>
             </Paper>
-
             {pData ? (
               <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handlePanel('panel1')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -523,14 +504,12 @@ class PayPalPayments extends React.Component {
                           preserveScrollPosition={true}
                         />
                       </div>
-
                   </Typography>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ):(
               null
             )}
-
           </main>
         </React.Fragment>
       </TabContainer>

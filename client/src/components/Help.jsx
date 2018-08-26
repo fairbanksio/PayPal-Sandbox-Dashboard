@@ -70,8 +70,40 @@ class Help extends React.Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat. Aliquam eget
-                maximus est, id dignissim quam.
+                <h4>Setup Instructions</h4>
+                <ul>
+                  <li>Ensure you have a running instance of MongoDB and appropriate connection details.</li>
+                  <li>Download this app's source code from Github.</li>
+                  <li>Extract to the folder of your choice and run <span style={{ fontFamily: 'Source Code Pro, monospace' }}>yarn install</span> to download dependencies.</li>
+                  <li>Launch the app using <span style={{ fontFamily: 'Source Code Pro, monospace' }}>MONGO_URI='mongodb://user:password@mysite.io/paypal' REACT_APP_HOST='sandbox.mysite.io' yarn start</span>.</li>
+                  <li>The app can be ran on an alternate port by passing <span style={{ fontFamily: 'Source Code Pro, monospace' }}>PORT=3001</span> along with the startup command above.</li>
+                </ul>
+                <h4>Notable Files</h4>
+                <table>
+                  <thead>
+                    <td><h5>File Location></h5></td>
+                    <td><h5>Comments</h5></td>
+                  </thead>
+                  <tr>
+                    <td style={{ fontFamily: 'Source Code Pro, monospace' }}>server.js</td>
+                    <td>Main App Entrypoint - Payment and Data API endpoints, Backend PayPal setup and logic</td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontFamily: 'Source Code Pro, monospace' }}>client/src/components</td>
+                    <td>Front-End views for Applications Tabs - Getting Started, Payments, Transaction Reports, etc.</td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontFamily: 'Source Code Pro, monospace' }}>client/public/</td>
+                    <td>Files in this folder are served directly to end-users.</td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontFamily: 'Source Code Pro, monospace' }}>client/src/models/ipn.js</td>
+                    <td>The schema used to read and write out of the MongoDB specified during launch.</td>
+                  </tr>
+                </table>
+                <br/>
+                For Bugs and Feature Requests, please see <a href='https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard' target='_blank'>the GitHub repo</a>.
+                <br/>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
@@ -84,18 +116,22 @@ class Help extends React.Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                To get started, with test payments in the PayPal Sandbox, you will need to provide a <pre>Client ID</pre> and <pre>Secret</pre> for the PayPal REST SDK.
+                To get started, with test payments in the PayPal Sandbox, you will need to provide a <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Client ID</span> and <span style={{ fontFamily: 'Source Code Pro, monospace' }}><b>Secret</b></span> for the PayPal REST SDK.
                 <b>These details are not saved on the server at any point</b>, but stored within the browser and securely transmitted between you and PayPal.
                 For help getting setup, please checkout the setup instructions below:
                 <ul>
                   <li>Create a PayPal Developer account at <a href='https://developer.paypal.com/' target='_blank'>Developer.PayPal.com</a></li>
                   <li>First, create a new Sandbox merchant account. Be sure to create a Business account and might as well pre-fill it with test money (we'll use it for testing).</li>
-                  <li>Once signed in, navigate to <i>My Apps & Credentials</i> and Create a New REST API App</li>
+                  <li>Once signed in, navigate to <i>My Apps & Credentials</i> and Create a New REST API App.</li>
                   <li>Provide app details such as the name and the associated account. Once done, click <i>Create App</i></li>
-                  <li>Take note of the <pre>Client ID</pre> & <pre>Secret</pre> and store them somewhere safe. These are the keys to paymenst with your Sandbox PayPal account!</li>
+                  <li>Take note of the <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Client ID</span> & <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Secret</span> and store them somewhere safe. These are the keys to paymenst with your Sandbox PayPal account!</li>
                   <li>Use the newly generated credentials on the <a href='/getting-started' target='_blank'>Getting Started</a> page.</li>
-                  <li>Finally, <a href='/sale-payments' target='_blank'>go test some payments!</a></li>
+                  <li>Once your credentials are set, it time to <a href='/sale-payments' target='_blank'>test some payments!</a></li>
+                  <li><i><a href='https://www.paypal.com/us/smarthelp/article/How-do-I-create-REST-API-credentials-ts1949' target='_blank'>More Info...</a></i></li>
                 </ul>
+                Looking for more information on the APIs used in this demo? Checkout the <a href='https://developer.paypal.com/docs/api/payments/v1/#payment_list' target='_blank'>Payments API docs</a>.
+                <br/><br/>
+                <a href='https://developer.paypal.com/docs/faq/' target='_blank'>PayPal Developer FAQs</a>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
