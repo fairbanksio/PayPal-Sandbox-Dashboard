@@ -38,11 +38,13 @@ app.post('/api/create-payment', function(req, res){
 })
 
 // Create Billing Agreement
-app.get('/api/create-agreement', function(req, res){
-	var apiKey = req.query.APIKey;
-	var apiSecret = req.query.APISecret;
-	var redirectURL = req.query.RedirectURL;
-	createBillingPlan(apiKey, apiSecret, redirectURL, function(billingAgreementResults){
+app.post('/api/create-agreement', function(req, res){
+	var apiKey = req.body.apiCredentials.key
+	var apiSecret = req.body.apiCredentials.secret
+	var redirectURL = req.body.redirectUrl
+	var billingPlanAttributes = req.body.billingPlanAttributes
+	var billingAgreementAttributes = req.body.billingAgreementAttributes
+	createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgreementAttributes, redirectURL, function(billingAgreementResults){
 		// Redirect to our approval handler to execute payment
 		res.json(billingAgreementResults)
 	});
@@ -62,10 +64,10 @@ app.post('/api/execute-payment', function(req, res){
 })
 
 // Execute Billing Agreement
-app.get('/api/execute-agreement', function(req, res){
-	var paymentToken = req.query.token
-	var apiKey = req.query.APIKey;
-	var apiSecret = req.query.APISecret;
+app.post('/api/execute-agreement', function(req, res){
+	var paymentToken = req.body.token
+	var apiKey = req.body.apiCredentials.key
+	var apiSecret = req.body.apiCredentials.secret
 	console.log("User has approved the agreement");
 	executeAgreement(apiKey, apiSecret, paymentToken, function(agreement){
 		//console.log(payment)
@@ -113,7 +115,7 @@ function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 	}
 }
 
-function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
+function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgreementAttributes, redirectURL, callback){
 	if(apiKey && apiSecret){
 		// Configure PayPal SDK
 		paypal.configure({
