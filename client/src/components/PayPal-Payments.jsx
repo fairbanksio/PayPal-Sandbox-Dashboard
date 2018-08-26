@@ -370,11 +370,6 @@ class PayPalPayments extends React.Component {
       }
     }
 
-
-
-
-
-    this.getPayments();
   }
 
   executePayment(){
@@ -410,28 +405,6 @@ class PayPalPayments extends React.Component {
         } else {
           this.setState({activeStep: 3});
           this.setState({pData:data});
-        }
-      })
-
-  }
-
-  getPayments(){
-    var apiKey = localStorage.getItem("clientID")
-    var apiSecret = localStorage.getItem("clientSecret")
-
-    var url = 'https://'+ serverHost + '/api/get-payments?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/agreements'
-
-    fetch(url)
-    .then(response => {
-        return response.json()
-      }).then(data => {
-        if(data.response){
-          //better error handling needed here.
-          console.log(data)
-          //this.setState({pData:data});
-        } else {
-          console.log(data)
-          this.setState({paymentsList:data});
         }
       })
 
