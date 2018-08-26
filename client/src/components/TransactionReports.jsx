@@ -12,6 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import {UnControlled as CodeMirror} from 'react-codemirror2';
+import Divider from '@material-ui/core/Divider';
 require('codemirror/mode/javascript/javascript');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -133,7 +134,7 @@ class IpnList extends React.Component {
                     <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
                     <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{'$' + item.ipnMessage.mc_gross}</span>
                   </Typography>
-                  <hr/>
+                  <Divider/>
                   <div>
                     <h4>IPN Message</h4>
                     <CodeMirror
@@ -162,7 +163,7 @@ class IpnList extends React.Component {
                         </CopyToClipboard>
                     }
                   </div>
-                  <br/><hr/>
+                  <br/><Divider/>
                   <div>
                     <h4>IPN Postback</h4>
                     <CodeMirror
@@ -254,7 +255,8 @@ class TransactionReports extends React.Component {
   componentDidMount() {
     this.getIpnData();
     this.getIpnCount();
-    this.timer = setInterval(()=> this.getIpnData(), 5000);
+    this.timer = setInterval(()=> this.getIpnData(), 10000);
+    this.timer = setInterval(()=> this.getIpnCount(), 10000);
   }
 
   componentWillUnmount() {
@@ -274,9 +276,9 @@ class TransactionReports extends React.Component {
               <IpnList {...this.props} ipns={this.state.ipnData}/>
               <br/>
               <Typography variant="caption">
-                <i>{'Total Transactions: ' + this.state.ipnCount}</i>
+                <i>{'Showing ' + this.state.ipnData.length + ' of ' + this.state.ipnCount + ' Transactions'}</i>
               </Typography>
-              <br/><hr/><br/>
+              <br/><Divider/><br/>
               <h3>DB Collection:</h3>
               <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -285,7 +287,7 @@ class TransactionReports extends React.Component {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <Typography>
-                    <hr/><br/>
+                    <Divider/><br/>
                     <CodeMirror
                       ref='dbCollection'
                       value={JSON.stringify(this.state.ipnData, null, ' ')}
