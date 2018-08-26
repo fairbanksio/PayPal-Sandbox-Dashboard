@@ -38,11 +38,13 @@ app.post('/api/create-payment', function(req, res){
 })
 
 // Create Billing Agreement
-app.get('/api/create-agreement', function(req, res){
-	var apiKey = req.query.APIKey;
-	var apiSecret = req.query.APISecret;
-	var redirectURL = req.query.RedirectURL;
-	createBillingPlan(apiKey, apiSecret, redirectURL, function(billingAgreementResults){
+app.post('/api/create-agreement', function(req, res){
+	var apiKey = req.body.apiCredentials.key
+	var apiSecret = req.body.apiCredentials.secret
+	var redirectURL = req.body.redirectUrl
+	var billingPlanAttributes = req.body.billingPlanAttributes
+	var billingAgreementAttributes = req.body.billingAgreementAttributes
+	createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgreementAttributes, redirectURL, function(billingAgreementResults){
 		// Redirect to our approval handler to execute payment
 		res.json(billingAgreementResults)
 	});
@@ -62,10 +64,10 @@ app.post('/api/execute-payment', function(req, res){
 })
 
 // Execute Billing Agreement
-app.get('/api/execute-agreement', function(req, res){
-	var paymentToken = req.query.token
-	var apiKey = req.query.APIKey;
-	var apiSecret = req.query.APISecret;
+app.post('/api/execute-agreement', function(req, res){
+	var paymentToken = req.body.token
+	var apiKey = req.body.apiCredentials.key
+	var apiSecret = req.body.apiCredentials.secret
 	console.log("User has approved the agreement");
 	executeAgreement(apiKey, apiSecret, paymentToken, function(agreement){
 		//console.log(payment)
@@ -117,7 +119,7 @@ function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 	}
 }
 
-function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
+function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgreementAttributes, redirectURL, callback){
 	if(apiKey && apiSecret){
 		// Configure PayPal SDK
 		paypal.configure({
@@ -128,104 +130,6 @@ function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 			'custom': 'header'
 			}
 		});
-
-		var isoDate = new Date();
-		isoDate.setSeconds(isoDate.getSeconds() + 10);
-		isoDate = isoDate.toISOString().slice(0,19) + 'Z';
-		console.log(isoDate);
-
-		var billingPlanAttributes = {
-		    "description": "Create Plan for Regular",
-		    "merchant_preferences": {
-		        "auto_bill_amount": "yes",
-		        "cancel_url": redirectURL,
-		        "initial_fail_amount_action": "continue",
-		        "max_fail_attempts": "1",
-		        "return_url": redirectURL,
-		        "setup_fee": {
-		            "currency": "USD",
-		            "value": "25"
-		        }
-		    },
-		    "name": "Testing1-Regular1",
-		    "payment_definitions": [
-		        {
-		            "amount": {
-		                "currency": "USD",
-		                "value": "100"
-		            },
-		            "charge_models": [
-		                {
-		                    "amount": {
-		                        "currency": "USD",
-		                        "value": "10.60"
-		                    },
-		                    "type": "SHIPPING"
-		                },
-		                {
-		                    "amount": {
-		                        "currency": "USD",
-		                        "value": "20"
-		                    },
-		                    "type": "TAX"
-		                }
-		            ],
-		            "cycles": "0",
-		            "frequency": "DAY",
-		            "frequency_interval": "1",
-		            "name": "Regular 1",
-		            "type": "REGULAR"
-		        },
-		        {
-		            "amount": {
-		                "currency": "USD",
-		                "value": "20"
-		            },
-		            "charge_models": [
-		                {
-		                    "amount": {
-		                        "currency": "USD",
-		                        "value": "10.60"
-		                    },
-		                    "type": "SHIPPING"
-		                },
-		                {
-		                    "amount": {
-		                        "currency": "USD",
-		                        "value": "20"
-		                    },
-		                    "type": "TAX"
-		                }
-		            ],
-		            "cycles": "4",
-		            "frequency": "DAY",
-		            "frequency_interval": "1",
-		            "name": "Trial 1",
-		            "type": "TRIAL"
-		        }
-		    ],
-		    "type": "INFINITE"
-		};
-
-		var billingAgreementAttributes = {
-		    "name": "Fast Speed Agreement",
-		    "description": "Agreement for Fast Speed Plan",
-		    "start_date": isoDate,
-		    "plan": {
-		        "id": "P-0NJ10521L3680291SOAQIVTQ"
-		    },
-		    "payer": {
-		        "payment_method": "paypal"
-		    },
-		    "shipping_address": {
-		        "line1": "StayBr111idge Suites",
-		        "line2": "Cro12ok Street",
-		        "city": "San Jose",
-		        "state": "CA",
-		        "postal_code": "95112",
-		        "country_code": "US"
-		    }
-		};
 
 		var billingPlanUpdateAttributes = [
 		    {
