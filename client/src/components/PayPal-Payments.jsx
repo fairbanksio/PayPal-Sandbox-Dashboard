@@ -104,9 +104,8 @@ const styles = theme => ({
   },
 });
 
-
 function getSteps() {
-return ['Create payment', 'Approve payment', 'Execute payment'];
+  return ['Create payment', 'Approve payment', 'Execute payment'];
 }
 
 class StepContent extends React.Component{
@@ -355,11 +354,7 @@ class PayPalPayments extends React.Component {
 
   componentWillMount(){
     var urlParams = qs.parse(this.props.location.search.slice(1));
-
-
     this.setState({activeStep: 0, mode: localStorage.getItem("mode")});
-
-
     if (urlParams.paymentId && urlParams.PayerID) {
       localStorage.setItem("paymentId", urlParams.paymentId);
       localStorage.setItem("payerId", urlParams.PayerID);
@@ -409,11 +404,6 @@ class PayPalPayments extends React.Component {
       })
 
   }
-
-  handleModeChange = event => {
-      this.setState({ mode: event.target.value });
-      localStorage.setItem("mode", event.target.value)
-    };
 
   render() {
     const { classes } = this.props;
