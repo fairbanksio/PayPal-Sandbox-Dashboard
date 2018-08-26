@@ -16,7 +16,7 @@ const styles = theme => ({
     flexGrow: 1,
     width: '100%',
     height: '100%',
-    backgroundColor: '#eeeeee5c' || theme.palette.background.paper,
+    backgroundColor: '#FAFAFA' || theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -38,7 +38,7 @@ class ScrollableTabsButtonForce extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ value });
-    console.log(value);
+    //console.log(value); // Enable to see the ID of the current tab (0 - x)
   };
 
   render() {
