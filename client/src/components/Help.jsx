@@ -76,12 +76,12 @@ class Help extends React.Component {
                   <li>Download this app's source code from Github.</li>
                   <li>Extract to the folder of your choice and run <span style={{ fontFamily: 'Source Code Pro, monospace' }}>yarn install</span> to download dependencies.</li>
                   <li>Launch the app using <span style={{ fontFamily: 'Source Code Pro, monospace' }}>MONGO_URI='mongodb://user:password@mysite.io/paypal' REACT_APP_HOST='sandbox.mysite.io' yarn start</span>.</li>
-                  <li>The app can be ran on an alternate port by passing <span style={{ fontFamily: 'Source Code Pro, monospace' }}>PORT=3001</span> along with the startup command above.</li>
+                  <li>Optional: The app can be ran on an alternate port by passing <span style={{ fontFamily: 'Source Code Pro, monospace' }}>PORT=3001</span> along with the startup command above.</li>
                 </ul>
                 <h4>Notable Files</h4>
                 <table>
                   <thead>
-                    <td><h5>File Location></h5></td>
+                    <td><h5>File Location</h5></td>
                     <td><h5>Comments</h5></td>
                   </thead>
                   <tr>
