@@ -405,6 +405,13 @@ class PayPalPayments extends React.Component {
 
   }
 
+
+  handleModeChange = event => {
+    this.setState({ mode: event.target.value });
+    localStorage.setItem("mode", event.target.value)
+  };
+
+
   render() {
     const { classes } = this.props;
     const steps = getSteps(this.state.mode);
