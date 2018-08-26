@@ -91,6 +91,49 @@ app.get('/api/ipnCount', function(req, res){
 	});
 })
 
+app.get('/api/get-payments', function(req, res){
+	var apiKey = req.query.APIKey;
+	var apiSecret = req.query.APISecret;
+
+	getPayments(apiKey, apiSecret,function(payments){
+		//console.log(payment)
+		res.json(payments);
+	})
+})
+
+
+function getPayments(apiKey, apiSecret,callback){
+
+	if(apiKey && apiSecret){
+		// Configure PayPal SDK
+		paypal.configure({
+			'mode': 'sandbox',
+			'client_id': apiKey,
+			'client_secret': apiSecret,
+			'headers' : {
+			'custom': 'header'
+			}
+		});
+
+		var listPayment = {
+			'count': '21',
+			'start_index': '0',
+			'state': 'created'
+		};
+
+		paypal.payment.list(listPayment, function (error, payments) {
+				if (error) {
+						callback(error);
+				} else {
+						console.log("Retreived payment listing");
+						callback(payments)
+				}
+		});
+
+	}
+
+}
+
 function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 	if(apiKey && apiSecret){
 		// Configure PayPal SDK

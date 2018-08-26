@@ -16,6 +16,12 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {UnControlled as CodeMirror} from 'react-codemirror2';
 import moment from 'moment';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 require('codemirror/mode/javascript/javascript');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -48,6 +54,9 @@ const styles = theme => ({
   },
   input: {
     display: 'none',
+  },
+  group: {
+    margin: `${theme.spacing.unit}px 0`,
   },
   instructions: {
     marginTop: theme.spacing.unit,
@@ -97,7 +106,7 @@ const styles = theme => ({
 
 
 function getSteps() {
-return ['Create payment', 'Approve payment', 'Execute payment', 'Payment complete'];
+return ['Create payment', 'Approve payment', 'Execute payment'];
 }
 
 class StepContent extends React.Component{
@@ -142,8 +151,6 @@ class StepContent extends React.Component{
       return 'Approve the payment that was just created';
       case 2:
       return 'Execute the payment';
-      case 3:
-      return 'Thats it! Payment has been completed succesfully.';
       default:
       return 'Unknown step';
     }
@@ -182,13 +189,7 @@ class PayPalPayments extends React.Component {
         console.log('execute payment');
 
         break;
-      case 3:
-        console.log('finish payment');
-        this.setState({
-          activeStep: activeStep + 1,
-          skipped,
-        });
-        break;
+
 
       default:
         break;
@@ -238,6 +239,7 @@ class PayPalPayments extends React.Component {
       activeStep: 0,
       skipped: new Set(),
       expanded: "panel1",
+      mode: 'quick',
     };
     this.handleChange = this.handleChange.bind(this);
     this.createPayment = this.createPayment.bind(this);
@@ -263,8 +265,6 @@ class PayPalPayments extends React.Component {
       return 'Approve Payment';
       case 2:
       return 'Execute Payment';
-      case 3:
-      return 'Finish Payment';
       default:
       return 'Unknown';
     }
@@ -334,6 +334,12 @@ class PayPalPayments extends React.Component {
           this.setState({activeStep: 1});
           localStorage.setItem("step", 1);
           localStorage.setItem("pRedirect", data.links[1].href);
+
+          if(localStorage.getItem("mode") === 'quick'){
+            if(localStorage.getItem("step") === '1'){
+              this.approvePayment();
+            }
+          }
           //window.location = data.links[1].href;
         }
       })
@@ -351,7 +357,7 @@ class PayPalPayments extends React.Component {
     var urlParams = qs.parse(this.props.location.search.slice(1));
 
 
-    this.setState({activeStep: 0});
+    this.setState({activeStep: 0, mode: localStorage.getItem("mode")});
 
 
     if (urlParams.paymentId && urlParams.PayerID) {
@@ -359,7 +365,16 @@ class PayPalPayments extends React.Component {
       localStorage.setItem("payerId", urlParams.PayerID);
       this.setState({activeStep: 2});
       this.setState({pData:JSON.parse(localStorage.getItem("pData"))})
+      if(localStorage.getItem("mode") === 'quick'){
+        this.executePayment();
+      }
     }
+
+
+
+
+
+    this.getPayments();
   }
 
   executePayment(){
@@ -400,11 +415,36 @@ class PayPalPayments extends React.Component {
 
   }
 
+  getPayments(){
+    var apiKey = localStorage.getItem("clientID")
+    var apiSecret = localStorage.getItem("clientSecret")
 
+    var url = 'https://'+ serverHost + '/api/get-payments?APIKey=' + apiKey + '&APISecret=' + apiSecret + '&RedirectURL=https://'+ serverHost + '/agreements'
+
+    fetch(url)
+    .then(response => {
+        return response.json()
+      }).then(data => {
+        if(data.response){
+          //better error handling needed here.
+          console.log(data)
+          //this.setState({pData:data});
+        } else {
+          console.log(data)
+          this.setState({paymentsList:data});
+        }
+      })
+
+  }
+
+  handleModeChange = event => {
+      this.setState({ mode: event.target.value });
+      localStorage.setItem("mode", event.target.value)
+    };
 
   render() {
     const { classes } = this.props;
-    const steps = getSteps();
+    const steps = getSteps(this.state.mode);
     const { activeStep } = this.state;
     var pData = this.state.pData;
     var pDataStringified = JSON.stringify(pData, null, ' ');
@@ -420,6 +460,26 @@ class PayPalPayments extends React.Component {
           <main className={classes.layout}>
             <Paper className={classes.paper}>
               <div className={classes.root}>
+                <FormControl component="fieldset" className={classes.formControl}>
+                  <FormLabel component="legend">Payment Mode:</FormLabel>
+                  <RadioGroup
+                    aria-label="Mode"
+                    name="mode"
+                    className={classes.group}
+                    value={this.state.mode}
+                    onChange={this.handleModeChange}
+                  >
+                    <FormControlLabel value="quick" control={<Radio />} label="Quick" />
+                    <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+                  </RadioGroup>
+                  <FormHelperText>Quick payments will be processed automatically, Custom payments require user action for each step.</FormHelperText>
+                </FormControl>
+              </div>
+            </Paper>
+
+            <Paper className={classes.paper}>
+              <div className={classes.root}>
+
                 <Stepper activeStep={activeStep}>
                   {steps.map((label, index) => {
                     const props = {};
@@ -441,23 +501,31 @@ class PayPalPayments extends React.Component {
                   {activeStep === steps.length ? (
                     <div>
                       <Typography className={classes.instructions}>
-                        All steps completed - you&quot;re finished
+                        Payment completed succesfully.
                       </Typography>
                       <Button variant="outlined" onClick={this.handleReset} className={classes.button}>
-                        Reset
+                        Start Over
                       </Button>
                     </div>
                   ) : (
                     <div>
-                      <Typography className={classes.instructions}><StepContent {...this.props} step={activeStep} /></Typography>
+                      <Typography className={classes.instructions}>
+                        {this.state.mode === 'custom' ? (
+                          <StepContent {...this.props} step={activeStep} />
+                          ):(null)
+                        }
+                      </Typography>
                       <div>
-                        <Button
-                          disabled={activeStep === 0}
-                          onClick={this.handleBack}
-                          className={classes.button}
-                        >
-                          Back
-                        </Button>
+                        {activeStep !== 0 ? (
+                          <Button
+                            disabled={activeStep === 0}
+                            onClick={this.handleBack}
+                            className={classes.button}
+                          >
+                            Back
+                          </Button>
+                        ):(null)}
+
                         {this.isStepOptional(activeStep) && (
                           <Button
                             variant="outlined"
