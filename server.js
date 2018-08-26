@@ -75,10 +75,8 @@ app.get('/api/execute-agreement', function(req, res){
 
 app.get('/api/ipnData', function(req, res){
     connection.db.collection("ipn", function(err, collection){
-            console.time('Loaded IPN Data from DB:');
             collection.find({}).sort({ timestamp: -1 }).limit(50).toArray(function(err, data){
                     res.json(data);
-                    console.timeEnd('Loaded IPN Data from DB:');
             })
     });
 })
@@ -102,8 +100,6 @@ function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 			'custom': 'header'
 			}
 		});
-
-
 
 		paypal.payment.create(paymentJSON, function (error, payment) {
 			if (error) {
@@ -132,7 +128,6 @@ function createBillingPlan(apiKey, apiSecret, redirectURL, callback){
 		var isoDate = new Date();
 		isoDate.setSeconds(isoDate.getSeconds() + 10);
 		isoDate = isoDate.toISOString().slice(0,19) + 'Z';
-		console.log(isoDate);
 
 		var billingPlanAttributes = {
 		    "description": "Create Plan for Regular",
