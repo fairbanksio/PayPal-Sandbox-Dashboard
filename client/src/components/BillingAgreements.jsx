@@ -103,7 +103,7 @@ const styles = theme => ({
 });
 
 function getSteps() {
-  return ['Create agreement', 'Approve agreement', 'Execute agreement'];
+  return ['Create billing plan', 'Create agreement', 'Approve agreement', 'Execute agreement'];
 }
 
 class StepContent extends React.Component{
@@ -122,34 +122,57 @@ class StepContent extends React.Component{
       case 0:
         return (
           <div>
-            Please define agreement details <br/>
+            Please define billing plan details <br/>
             <TextField
-              id="pItemName"
-              label="Item Name"
+              id="pPlanType"
+              label="Plan Type"
               type="search"
               className={classes.textField}
               margin="normal"
               onChange={this.handleChange}
               style={{width: '500px'}}
+              value={localStorage.getItem("pPlanType")}
             />
-            <br/>
             <TextField
-              id="pItemCost"
-              label="Item Price"
+              id="pPlanValue"
+              label="Plan Value"
               type="search"
               className={classes.textField}
               margin="normal"
               onChange={this.handleChange}
               style={{width: '500px'}}
+              value={localStorage.getItem("pPlanValue")}
+            />
+            <TextField
+              id="pPlanFrequency"
+              label="Plan Frequency"
+              type="search"
+              className={classes.textField}
+              margin="normal"
+              onChange={this.handleChange}
+              style={{width: '500px'}}
+              value={localStorage.getItem("pPlanFrequency")}
+            />
+            <TextField
+              id="pPlanFrequencyInt"
+              label="Plan Frequency Interval"
+              type="search"
+              className={classes.textField}
+              margin="normal"
+              onChange={this.handleChange}
+              style={{width: '500px'}}
+              value={localStorage.getItem("pPlanFrequencyInt")}
             />
           </div>
         );
       case 1:
-      return 'Approve the agreement that was just created';
+        return 'Create billing agreement from the plan';
       case 2:
-      return 'Execute the agreement';
+        return 'Approve the agreement that was just created';
+      case 3:
+        return 'Execute the agreement';
       default:
-      return 'Unknown step';
+        return 'Unknown step';
     }
   }
 }
@@ -170,16 +193,21 @@ class PayPalAgreements extends React.Component {
 
     switch(activeStep){
       case 0:
+        this.createBillingPlan();
+        console.log('create billing plan');
+        break;
+
+      case 1:
         this.createAgreement();
         console.log('create agreement');
         break;
 
-      case 1:
+      case 2:
         this.approveAgreement();
         console.log('approve agreement');
         break;
 
-      case 2:
+      case 3:
         this.executeAgreement();
         console.log('execute agreement');
 
@@ -252,23 +280,26 @@ class PayPalAgreements extends React.Component {
   getStepButtonText(step){
     switch (step) {
       case 0:
-        return 'Create Agreement'
+        return 'Create Billing Plan'
       case 1:
-      return 'Approve Agreement';
+        return 'Create Agreement'
       case 2:
-      return 'Execute Agreement';
+        return 'Approve Agreement';
+      case 3:
+        return 'Execute Agreement';
       default:
-      return 'Unknown';
+        return 'Unknown';
     }
   }
 
-  createAgreement() {
+  createBillingPlan() {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
-    var itemName = localStorage.getItem("pItemName")
-    var itemCost = localStorage.getItem("pItemCost")
-    console.log(itemName);
-    console.log(itemCost);
+
+    var planType = localStorage.getItem("pPlanType")
+    var planValue = localStorage.getItem("pPlanValue")
+    var planFrequency = localStorage.getItem("pPlanFrequency")
+    var planFrequencyInt = localStorage.getItem("pPlanFrequencyInt")
 
     var isoDate = new Date();
     isoDate.setSeconds(isoDate.getSeconds() + 10);
@@ -294,7 +325,7 @@ class PayPalAgreements extends React.Component {
             {
                 "amount": {
                     "currency": "USD",
-                    "value": "100"
+                    "value": planValue || "100"
                 },
                 "charge_models": [
                     {
@@ -313,10 +344,10 @@ class PayPalAgreements extends React.Component {
                     }
                 ],
                 "cycles": "0",
-                "frequency": "DAY",
-                "frequency_interval": "1",
+                "frequency": planFrequency || "DAY",
+                "frequency_interval": planFrequencyInt || "1",
                 "name": "Regular 1",
-                "type": "REGULAR"
+                "type": planType || "REGULAR"
             },
             {
                 "amount": {
@@ -349,12 +380,65 @@ class PayPalAgreements extends React.Component {
         "type": "INFINITE"
     };
 
+    var data = {billingPlanAttributes:billingPlanAttributes, apiCredentials: {key:apiKey, secret:apiSecret}}
+    var url = 'https://'+ serverHost + '/api/create-billingplan'
+
+    fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, same-origin, *omit
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      redirect: "follow", // manual, *follow, error
+      referrer: "no-referrer", // no-referrer, *client
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+    .then(response => {
+        return response.json()
+      }).then(data => {
+        if(data.response){
+          //better error handling needed here.
+          console.log(data)
+          //this.setState({pData:data});
+        } else {
+          console.log(data)
+          //this.setState({agreementStatus:"Redirecting for approval",activeStep: 2});
+          //this.setState({agreementStatus:JSON.stringify(data.response)});
+          this.setState({pDataPlan:data});
+          this.setState({activeStep: 1});
+          localStorage.setItem("step", 1);
+          localStorage.setItem("pRedirect", data.links[0].href);
+          localStorage.setItem("pBillPlanId", data.id);
+
+          if(localStorage.getItem("mode") === 'quick'){
+            if(localStorage.getItem("step") === '1'){
+              this.createAgreement();
+            }
+          }
+          //window.location = data.links[1].href;
+        }
+      })
+  }
+
+  createAgreement() {
+    var apiKey = localStorage.getItem("clientID")
+    var apiSecret = localStorage.getItem("clientSecret")
+    var billPlanId = localStorage.getItem("pBillPlanId")
+
+    var isoDate = new Date();
+    isoDate.setSeconds(isoDate.getSeconds() + 10);
+    isoDate = isoDate.toISOString().slice(0,19) + 'Z';
+    console.log(isoDate);
+
     var billingAgreementAttributes = {
         "name": "Fast Speed Agreement",
         "description": "Agreement for Fast Speed Plan",
         "start_date": isoDate,
         "plan": {
-            "id": "P-0NJ10521L3680291SOAQIVTQ"
+            "id": billPlanId
         },
         "payer": {
             "payment_method": "paypal"
@@ -368,7 +452,10 @@ class PayPalAgreements extends React.Component {
             "country_code": "US"
         }
     };
-    var data = {billingPlanAttributes:billingPlanAttributes, billingAgreementAttributes:billingAgreementAttributes, apiCredentials: {key:apiKey, secret:apiSecret}, redirectUrl: redirectURL}
+
+    console.log(billingAgreementAttributes)
+
+    var data = { billingAgreementAttributes:billingAgreementAttributes, apiCredentials: {key:apiKey, secret:apiSecret}}
     var url = 'https://'+ serverHost + '/api/create-agreement'
 
     fetch(url, {
@@ -395,12 +482,12 @@ class PayPalAgreements extends React.Component {
           //this.setState({agreementStatus:"Redirecting for approval",activeStep: 2});
           //this.setState({agreementStatus:JSON.stringify(data.response)});
           this.setState({pData:data});
-          this.setState({activeStep: 1});
-          localStorage.setItem("step", 1);
+          this.setState({activeStep: 2});
+          localStorage.setItem("step", 2);
           localStorage.setItem("pRedirect", data.links[0].href);
 
           if(localStorage.getItem("mode") === 'quick'){
-            if(localStorage.getItem("step") === '1'){
+            if(localStorage.getItem("step") === '2'){
               this.approveAgreement();
             }
           }
@@ -420,7 +507,7 @@ class PayPalAgreements extends React.Component {
     this.setState({activeStep: 0, mode: localStorage.getItem("mode")});
     if (urlParams.token) {
       localStorage.setItem("agreementToken", urlParams.token);
-      this.setState({activeStep: 2});
+      this.setState({activeStep: 3});
       this.setState({pData:JSON.parse(localStorage.getItem("pData"))})
       if(localStorage.getItem("mode") === 'quick'){
         this.executeAgreement();
@@ -457,7 +544,7 @@ class PayPalAgreements extends React.Component {
           console.log(data)
           //this.setState({pData:data});
         } else {
-          this.setState({activeStep: 3});
+          this.setState({activeStep: 4});
           this.setState({pData:data});
         }
       })

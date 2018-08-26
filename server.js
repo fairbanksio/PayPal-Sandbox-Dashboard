@@ -37,14 +37,24 @@ app.post('/api/create-payment', function(req, res){
 
 })
 
+
+// Create Billing Agreement
+app.post('/api/create-billingplan', function(req, res){
+	var apiKey = req.body.apiCredentials.key
+	var apiSecret = req.body.apiCredentials.secret
+	var billingPlanAttributes = req.body.billingPlanAttributes
+	createBillingPlan(apiKey, apiSecret, billingPlanAttributes,  function(billingPlanResults){
+		// Redirect to our approval handler to execute payment
+		res.json(billingPlanResults)
+	});
+})
+
 // Create Billing Agreement
 app.post('/api/create-agreement', function(req, res){
 	var apiKey = req.body.apiCredentials.key
 	var apiSecret = req.body.apiCredentials.secret
-	var redirectURL = req.body.redirectUrl
-	var billingPlanAttributes = req.body.billingPlanAttributes
 	var billingAgreementAttributes = req.body.billingAgreementAttributes
-	createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgreementAttributes, redirectURL, function(billingAgreementResults){
+	createBillingAgreement(apiKey, apiSecret, billingAgreementAttributes, function(billingAgreementResults){
 		// Redirect to our approval handler to execute payment
 		res.json(billingAgreementResults)
 	});
@@ -119,7 +129,7 @@ function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 	}
 }
 
-function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgreementAttributes, redirectURL, callback){
+function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, callback){
 	if(apiKey && apiSecret){
 		// Configure PayPal SDK
 		paypal.configure({
@@ -144,12 +154,10 @@ function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgre
 		paypal.billingPlan.create(billingPlanAttributes, function (error, billingPlan) {
 		    if (error) {
 		        console.log(error);
-						callback(billingPlan)
 						//throw error;
 		    } else {
 		        console.log("Billing plan created");
 
-						billingAgreementAttributes.plan.id = billingPlan.id;
 						// Activate the plan by changing status to Active
 		        paypal.billingPlan.update(billingPlan.id, billingPlanUpdateAttributes, function (error, response) {
 		            if (error) {
@@ -157,23 +165,39 @@ function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, billingAgre
 		                //throw error;
 		            } else {
 		                console.log("Billing plan state changed to " + billingPlan.state);
-		                billingAgreementAttributes.plan.id = billingPlan.id;
-
-		                // Use activated billing plan to create agreement
-		                paypal.billingAgreement.create(billingAgreementAttributes, function (error, billingAgreement) {
-		                    if (error) {
-		                        console.log(error);
-		                        //throw error;
-		                    } else {
-		                        console.log("Billing agreement created from billing plan");
-		                        //console.log(billingAgreement);
-														callback(billingAgreement)
-		                    }
-		                });
+		                callback(billingPlan)
 		            }
 		        });
 		    }
 		});
+	}
+}
+
+function createBillingAgreement(apiKey, apiSecret, billingAgreementAttributes, callback){
+	if(apiKey && apiSecret){
+
+		// Configure PayPal SDK
+		paypal.configure({
+			'mode': 'sandbox',
+			'client_id': apiKey,
+			'client_secret': apiSecret,
+			'headers' : {
+			'custom': 'header'
+			}
+		});
+
+    // Use activated billing plan to create agreement
+    paypal.billingAgreement.create(billingAgreementAttributes, function (error, billingAgreement) {
+        if (error) {
+            console.log(error);
+            //throw error;
+        } else {
+            console.log("Billing agreement created from billing plan");
+            //console.log(billingAgreement);
+						callback(billingAgreement)
+        }
+    });
+
 	}
 }
 
