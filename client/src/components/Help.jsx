@@ -81,8 +81,8 @@ class Help extends React.Component {
                 <h4>Notable Files</h4>
                 <table>
                   <thead>
-                    <td><h5>File Location</h5></td>
-                    <td><h5>Comments</h5></td>
+                    <td><b>File Location</b></td>
+                    <td><b>Comments</b></td>
                   </thead>
                   <tr>
                     <td style={{ fontFamily: 'Source Code Pro, monospace' }}>server.js</td>
@@ -116,7 +116,7 @@ class Help extends React.Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                To get started, with test payments in the PayPal Sandbox, you will need to provide a <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Client ID</span> and <span style={{ fontFamily: 'Source Code Pro, monospace' }}><b>Secret</b></span> for the PayPal REST SDK.
+                To get started, with test payments in the PayPal Sandbox, you will need to provide a <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Client ID</span> and <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Secret</span> for the PayPal REST SDK.
                 <b>These details are not saved on the server at any point</b>, but stored within the browser and securely transmitted between you and PayPal.
                 For help getting setup, please checkout the setup instructions below:
                 <ul>
