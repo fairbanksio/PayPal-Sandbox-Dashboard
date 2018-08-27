@@ -19,6 +19,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
+    height: '100%',
     backgroundColor: '#FAFAFA' || theme.palette.background.paper,
   },
   button: {
