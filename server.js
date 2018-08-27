@@ -247,6 +247,7 @@ function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, callback){
 		paypal.billingPlan.create(billingPlanAttributes, function (error, billingPlan) {
 		    if (error) {
 		        console.log(error);
+						callback(error)
 						//throw error;
 		    } else {
 		        console.log("Billing plan created");
@@ -283,10 +284,9 @@ function createBillingAgreement(apiKey, apiSecret, billingAgreementAttributes, c
     paypal.billingAgreement.create(billingAgreementAttributes, function (error, billingAgreement) {
         if (error) {
             console.log(error);
-            //throw error;
+            callback(error)
         } else {
             console.log("Billing agreement created from billing plan");
-            //console.log(billingAgreement);
 						callback(billingAgreement)
         }
     });

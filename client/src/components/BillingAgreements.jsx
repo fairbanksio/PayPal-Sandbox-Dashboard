@@ -22,6 +22,12 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import Chip from '@material-ui/core/Chip';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 require('codemirror/mode/javascript/javascript');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -46,9 +52,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200,
+
   },
   input: {
     display: 'none',
@@ -100,6 +104,20 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
     paddingRight: theme.spacing.unit * 3,
   },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  },
+  chip: {
+    margin: theme.spacing.unit,
+  },
+  progress: {
+    marginLeft: theme.spacing.unit * 1.5,
+    marginRight: theme.spacing.unit
+  }
 });
 
 function getSteps() {
@@ -111,7 +129,32 @@ class StepContent extends React.Component{
   handleChange(event) {
     // Save to Local Storage
     localStorage.setItem(event.target.id, event.target.value);
+    this.setState({[event.target.id]: event.target.value})
   }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      agreementStatus: "",
+      activeStep: 0,
+      skipped: new Set(),
+      expanded: "panel1",
+      mode: 'quick',
+      planType: localStorage.getItem("planType"),
+      planValue: localStorage.getItem("planValue"),
+      planFrequency: localStorage.getItem("planFrequency"),
+      planFrequencyInt: localStorage.getItem("planFrequencyInt"),
+      agreementName: localStorage.getItem("agreementName"),
+      agreementDesc: localStorage.getItem("agreementDesc"),
+      agreementStart: localStorage.getItem("agreementStart"),
+
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleSelectChange = event => {
+    localStorage.setItem(event.target.name, event.target.value);
+    this.setState({[event.target.name]: event.target.value})
+  };
 
   render(){
     const { classes } = this.props;
@@ -123,50 +166,112 @@ class StepContent extends React.Component{
         return (
           <div>
             Please define billing plan details <br/>
-            <TextField
-              id="pPlanType"
-              label="Plan Type"
-              type="search"
-              className={classes.textField}
-              margin="normal"
-              onChange={this.handleChange}
-              style={{width: '500px'}}
-              value={localStorage.getItem("pPlanType")}
-            />
-            <TextField
-              id="pPlanValue"
-              label="Plan Value"
-              type="search"
-              className={classes.textField}
-              margin="normal"
-              onChange={this.handleChange}
-              style={{width: '500px'}}
-              value={localStorage.getItem("pPlanValue")}
-            />
-            <TextField
-              id="pPlanFrequency"
-              label="Plan Frequency"
-              type="search"
-              className={classes.textField}
-              margin="normal"
-              onChange={this.handleChange}
-              style={{width: '500px'}}
-              value={localStorage.getItem("pPlanFrequency")}
-            />
-            <TextField
-              id="pPlanFrequencyInt"
-              label="Plan Frequency Interval"
-              type="search"
-              className={classes.textField}
-              margin="normal"
-              onChange={this.handleChange}
-              style={{width: '500px'}}
-              value={localStorage.getItem("pPlanFrequencyInt")}
-            />
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="age-simple">Plan Type</InputLabel>
+              <Select
+                className={classes.textField}
+                label="Plan Type"
+                value={this.state.planType}
+                defaultValue='regular'
+                onChange={this.handleSelectChange}
+                inputProps={{
+                  name: 'planType',
+                  id: 'planType-simple',
+                }}
+              >
+                <MenuItem value={'regular'}>Regular</MenuItem>
+                <MenuItem value={'trial'}>Trial</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="age-simple">Plan Frequency</InputLabel>
+              <Select
+                className={classes.textField}
+                label="Plan Frequency"
+                defaultValue='day'
+                value={this.state.planFrequency}
+                onChange={this.handleSelectChange}
+                inputProps={{
+                  name: 'planFrequency',
+                  id: 'planFrequency-simple',
+                }}
+              >
+                <MenuItem value={'day'}>Day</MenuItem>
+                <MenuItem value={'week'}>Week</MenuItem>
+                <MenuItem value={'month'}>Month</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <TextField
+                id="planFrequencyInt"
+                label="Plan Frequency Interval"
+                type="search"
+                className={classes.textField}
+                margin="normal"
+                onChange={this.handleChange}
+                defaultValue='1'
+                value={this.state.planFrequencyInt}
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <TextField
+                id="planValue"
+                label="Plan Value"
+                type="search"
+                className={classes.textField}
+                margin="normal"
+                onChange={this.handleChange}
+                defaultValue='100'
+                value={this.state.planValue}
+              />
+            </FormControl>
+            <FormHelperText>All fields are optional and will use defaults where blanks are received.</FormHelperText>
           </div>
         );
       case 1:
-        return 'Create billing agreement from the plan';
+      return (
+        <div>
+          Please define agreement details <br/>
+          <FormControl className={classes.formControl}>
+            <TextField
+              id="agreementName"
+              label="Agreement Name"
+              type="search"
+              className={classes.textField}
+              margin="normal"
+              onChange={this.handleChange}
+              value={this.state.agreementName}
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <TextField
+              id="agreementDesc"
+              label="Agreement Description"
+              type="search"
+              className={classes.textField}
+              margin="normal"
+              style={{width: '500px'}}
+              onChange={this.handleChange}
+              value={this.state.agreementDesc}
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <TextField
+              id="agreementStart"
+              label="Agreement Start"
+              type="datetime-local"
+              className={classes.textField}
+              onChange={this.handleChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={this.state.agreementStart}
+            />
+          </FormControl>
+          <FormHelperText>All fields are optional and will use defaults where blanks are received.</FormHelperText>
+        </div>
+      );
       case 2:
         return 'Approve the agreement that was just created';
       case 3:
@@ -261,6 +366,8 @@ class PayPalAgreements extends React.Component {
       skipped: new Set(),
       expanded: "panel1",
       mode: 'quick',
+      chipStatus: '',
+      chipIndicator: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.createAgreement = this.createAgreement.bind(this);
@@ -296,16 +403,16 @@ class PayPalAgreements extends React.Component {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
 
-    var planType = localStorage.getItem("pPlanType")
-    var planValue = localStorage.getItem("pPlanValue")
-    var planFrequency = localStorage.getItem("pPlanFrequency")
-    var planFrequencyInt = localStorage.getItem("pPlanFrequencyInt")
+    var planType = localStorage.getItem("planType")
+    var planValue = localStorage.getItem("planValue")
+    var planFrequency = localStorage.getItem("planFrequency")
+    var planFrequencyInt = localStorage.getItem("planFrequencyInt")
 
     var isoDate = new Date();
     isoDate.setSeconds(isoDate.getSeconds() + 10);
     isoDate = isoDate.toISOString().slice(0,19) + 'Z';
     console.log(isoDate);
-
+    this.setState({chipStatus:'Creating billing plan...', chipIndicator:'loading'})
     var redirectURL = 'https://'+ serverHost + '/agreements'
     var billingPlanAttributes = {
         "description": "Create Plan for Regular",
@@ -348,33 +455,6 @@ class PayPalAgreements extends React.Component {
                 "frequency_interval": planFrequencyInt || "1",
                 "name": "Regular 1",
                 "type": planType || "REGULAR"
-            },
-            {
-                "amount": {
-                    "currency": "USD",
-                    "value": "20"
-                },
-                "charge_models": [
-                    {
-                        "amount": {
-                            "currency": "USD",
-                            "value": "10.60"
-                        },
-                        "type": "SHIPPING"
-                    },
-                    {
-                        "amount": {
-                            "currency": "USD",
-                            "value": "20"
-                        },
-                        "type": "TAX"
-                    }
-                ],
-                "cycles": "4",
-                "frequency": "DAY",
-                "frequency_interval": "1",
-                "name": "Trial 1",
-                "type": "TRIAL"
             }
         ],
         "type": "INFINITE"
@@ -396,19 +476,21 @@ class PayPalAgreements extends React.Component {
       referrer: "no-referrer", // no-referrer, *client
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
-    .then(response => {
-        return response.json()
+      .then( response => {
+        if (!response.ok) { throw response }
+        return response.json()  //we only get here if there is no error
       }).then(data => {
         if(data.response){
-          //better error handling needed here.
-          console.log(data)
-          //this.setState({pData:data});
+          var sdkError = 'PayPal SDK Failure: ' + data.response.details[0].issue + '. (' + data.response.debug_id + ')'
+          this.setState({chipStatus:sdkError, chipIndicator:'error'})
         } else {
-          console.log(data)
-          //this.setState({agreementStatus:"Redirecting for approval",activeStep: 2});
-          //this.setState({agreementStatus:JSON.stringify(data.response)});
-          this.setState({pDataPlan:data});
-          this.setState({activeStep: 1});
+          this.setState({
+            chipStatus:'Billing plan created successfully!',
+            chipIndicator:'success',
+            pDataPlan:data,
+            activeStep: 1
+          })
+
           localStorage.setItem("step", 1);
           localStorage.setItem("pRedirect", data.links[0].href);
           localStorage.setItem("pBillPlanId", data.id);
@@ -418,9 +500,11 @@ class PayPalAgreements extends React.Component {
               this.createAgreement();
             }
           }
-          //window.location = data.links[1].href;
+
         }
-      })
+      }).catch( err => {
+            this.setState({chipStatus:'Error making request to API ('+url+'): ' + err.status + ' - ' + err.statusText, chipIndicator:'error'})
+        })
   }
 
   createAgreement() {
@@ -428,14 +512,18 @@ class PayPalAgreements extends React.Component {
     var apiSecret = localStorage.getItem("clientSecret")
     var billPlanId = localStorage.getItem("pBillPlanId")
 
+    var agreementName = localStorage.getItem("agreementName")
+    var agreementDesc = localStorage.getItem("agreementDesc")
+    var agreementStart = localStorage.getItem("agreementStart")
+
     var isoDate = new Date();
     isoDate.setSeconds(isoDate.getSeconds() + 10);
     isoDate = isoDate.toISOString().slice(0,19) + 'Z';
     console.log(isoDate);
-
+    this.setState({chipStatus:'Creating billing agreement...', chipIndicator:'loading'})
     var billingAgreementAttributes = {
-        "name": "Fast Speed Agreement",
-        "description": "Agreement for Fast Speed Plan",
+        "name": agreementName || "Fast Speed Agreement",
+        "description": agreementDesc || "Agreement for Fast Speed Plan",
         "start_date": isoDate,
         "plan": {
             "id": billPlanId
@@ -472,33 +560,33 @@ class PayPalAgreements extends React.Component {
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
     .then(response => {
+        if (!response.ok) { throw response }
         return response.json()
       }).then(data => {
         if(data.response){
-          //better error handling needed here.
-          console.log(data)
-          //this.setState({pData:data});
+          var sdkError = 'PayPal SDK Failure: ' + data.response.details[0].issue + '. (' + data.response.debug_id + ')'
+          this.setState({chipStatus:sdkError, chipIndicator:'error'})
         } else {
-          //this.setState({agreementStatus:"Redirecting for approval",activeStep: 2});
-          //this.setState({agreementStatus:JSON.stringify(data.response)});
           this.setState({pData:data});
           this.setState({activeStep: 2});
           localStorage.setItem("step", 2);
           localStorage.setItem("pRedirect", data.links[0].href);
-
+          this.setState({chipStatus:'Billing agreement created successfully!', chipIndicator:'success'})
           if(localStorage.getItem("mode") === 'quick'){
             if(localStorage.getItem("step") === '2'){
               this.approveAgreement();
             }
           }
-          //window.location = data.links[1].href;
         }
-      })
+      }).catch( err => {
+            this.setState({chipStatus:'Error making request to API ('+url+'): ' + err.status + ' - ' + err.statusText, chipIndicator:'error'})
+        })
   }
 
   approveAgreement() {
     localStorage.setItem("pData",JSON.stringify(this.state.pData));
     localStorage.setItem("step",2);
+    this.setState({chipStatus:'Redirecting to PayPal for approval...', chipIndicator:'loading'})
     window.location = localStorage.getItem("pRedirect");
   }
 
@@ -509,6 +597,7 @@ class PayPalAgreements extends React.Component {
       localStorage.setItem("agreementToken", urlParams.token);
       this.setState({activeStep: 3});
       this.setState({pData:JSON.parse(localStorage.getItem("pData"))})
+      this.setState({chipStatus:'Billing agreement approved', chipIndicator:'success'})
       if(localStorage.getItem("mode") === 'quick'){
         this.executeAgreement();
       }
@@ -522,7 +611,7 @@ class PayPalAgreements extends React.Component {
     var token = localStorage.getItem("agreementToken")
     var url = 'https://'+ serverHost + '/api/execute-agreement'
     var data = {apiCredentials: {key:apiKey, secret:apiSecret}, token:token}
-
+    this.setState({chipStatus:'Executing agreement...', chipIndicator:'loading'})
     fetch(url, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, cors, *same-origin
@@ -537,23 +626,46 @@ class PayPalAgreements extends React.Component {
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
     .then(response => {
+        if (!response.ok) { throw response }
         return response.json()
       }).then(data => {
         if(data.response){
-          //better error handling needed here.
-          console.log(data)
-          //this.setState({pData:data});
+          var sdkError = 'PayPal SDK Failure: ' + data.response.details[0].issue + '. (' + data.response.debug_id + ')'
+          this.setState({chipStatus:sdkError, chipIndicator:'error'})
         } else {
           this.setState({activeStep: 4});
           this.setState({pData:data});
+          this.setState({chipStatus:'Billing agreement has been executed successfully!', chipIndicator:'success'})
         }
-      })
+      }).catch( err => {
+            this.setState({chipStatus:'Error making request to API ('+url+'): ' + err.status + ' - ' + err.statusText, chipIndicator:'error'})
+        })
   }
 
   handleModeChange = event => {
     this.setState({ mode: event.target.value });
     localStorage.setItem("mode", event.target.value)
   };
+
+  getChipIcon(chipIndicator){
+    const { classes } = this.props;
+    switch (chipIndicator) {
+      case 'loading':
+        return (
+          <CircularProgress className={classes.progress} size={15} />
+        );
+      case 'success':
+        return (
+          <i className="far fa-check-circle" style={{color: '#090',padding: '8px 12px'}}/>
+        );
+      case 'error':
+        return (
+          <i className="far fa-times-circle" style={{color: '#900',padding: '8px 12px'}}/>
+        );
+      default:
+        return 'Unknown';
+    }
+  }
 
   render() {
     const { classes } = this.props;
@@ -562,6 +674,8 @@ class PayPalAgreements extends React.Component {
     var pData = this.state.pData;
     var pDataStringified = JSON.stringify(pData, null, ' ');
     const { expanded } = this.state;
+    var {chipStatus} = this.state;
+    var {chipIndicator} = this.state;
     return (
       <TabContainer>
         <div>
@@ -660,6 +774,17 @@ class PayPalAgreements extends React.Component {
                     </div>
                   )}
                 </div>
+
+                {chipStatus !== '' ? (
+                  <Chip
+                    avatar={
+                      this.getChipIcon(chipIndicator)
+                    }
+                    label={chipStatus}
+                    className={classes.chip}
+                  />
+                ):(null)}
+
               </div>
             </Paper>
             {pData ? (
