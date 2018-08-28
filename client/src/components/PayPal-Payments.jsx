@@ -372,7 +372,7 @@ class PayPalPayments extends React.Component {
       localStorage.setItem("payerId", urlParams.PayerID);
       this.setState({activeStep: 2});
       this.setState({pData:JSON.parse(localStorage.getItem("pData"))})
-      this.setState({chipStatus:'Billing agreement approved', chipIndicator:'success'})
+      this.setState({chipStatus:'Payment approved', chipIndicator:'success'})
       if(localStorage.getItem("mode") === 'quick'){
         this.executePayment();
       }
@@ -413,7 +413,7 @@ class PayPalPayments extends React.Component {
         } else {
           this.setState({activeStep: 3});
           this.setState({pData:data});
-          this.setState({chipStatus:'Billing agreement has been executed successfully!', chipIndicator:'success'})
+          this.setState({chipStatus:'Payment has been executed successfully!', chipIndicator:'success'})
         }
       }).catch( err => {
             this.setState({chipStatus:'Error making request to API ('+url+'): ' + err.status + ' - ' + err.statusText, chipIndicator:'error'})
