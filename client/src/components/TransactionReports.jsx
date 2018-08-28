@@ -107,7 +107,7 @@ class IpnList extends React.Component {
     return (
       this.props.ipns.length > 0 ? this.props.ipns.map(function(item, key) {
         return (
-          <ExpansionPanel key={key} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
+          <ExpansionPanel key={key} CollapseProps={{ unmountOnExit: true }} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.heading}>
                 {item.status === "VERIFIED"
