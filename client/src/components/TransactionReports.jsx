@@ -154,7 +154,6 @@ class IpnList extends React.Component {
                     }
                   </Typography>
                   <Divider/>
-                  <div>
                     <h4>IPN Message</h4>
                     <CodeMirror
                       ref='ipnMessage'
@@ -181,7 +180,6 @@ class IpnList extends React.Component {
                           </Button>
                         </CopyToClipboard>
                     }
-                  </div>
                   <br/><Divider/>
                   <div>
                     <h4>IPN Postback</h4>
