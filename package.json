@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bsord/paypal-payment-generator.git"
+    "url": "git+https://github.com/Fairbanks-io/paypal-sandbox-dashboard.git"
   },
-  "author": "Brandon Sorgdrager",
+  "author": "Fairbanks.io",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bsord/paypal-payment-generator/issues"
+    "url": "https://github.com/Fairbanks-io/paypal-sandbox-dashboard/issues"
   },
-  "homepage": "https://github.com/bsord/paypal-payment-generator#readme",
+  "homepage": "https://github.com/Fairbanks-io/paypal-sandbox-dashboard#readme",
   "keywords": [
     "paypal"
   ]
