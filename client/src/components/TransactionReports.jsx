@@ -136,10 +136,22 @@ class IpnList extends React.Component {
               <Typography>
                 <div style={{ width: '31%'}}>
                   <Typography variant="caption">
-                    <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{item.ipnMessage.payment_status}</span>
-                    <span style={{ paddingRight: '25px' }}><b>IPN Status: </b>{item.status}</span>
-                    <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
-                    <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{'$' + item.ipnMessage.mc_gross}</span>
+                    {item.ipnMessage.payment_status
+                      ? <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{item.ipnMessage.payment_status}</span>
+                      : null
+                    }
+                    {item.status
+                      ? <span style={{ paddingRight: '25px' }}><b>IPN Status: </b>{item.status}</span>
+                      : null
+                    }
+                    {item.ipnMessage.payer_email
+                      ? <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
+                      : null
+                    }
+                    {item.ipnMessage.mc_gross
+                      ? <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{'$' + item.ipnMessage.mc_gross}</span>
+                      : null
+                    }
                   </Typography>
                   <Divider/>
                   <div>
@@ -280,11 +292,8 @@ class TransactionReports extends React.Component {
           <h3>Transaction Reports</h3>
           {this.state.ipnData.length > 0
             ?<div style={{
-              position: 'absolute',
-              width: '100vw',
-              width: '100vh',
-              top: 0,
-              left: 0
+              width: '97vw',
+              height: '100vh',
             }}>
               <IpnList {...this.props} ipns={this.state.ipnData}/>
               <br/>
