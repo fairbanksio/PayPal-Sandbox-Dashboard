@@ -605,7 +605,7 @@ class PayPalAgreements extends React.Component {
         this.executeAgreement();
       }
     }
-
+    this.props.tabChange(null, this.props.match.path)
   }
 
   executeAgreement(){

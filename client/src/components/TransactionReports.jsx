@@ -101,6 +101,10 @@ class IpnList extends React.Component {
     });
   };
 
+  componentWillMount(){
+    this.props.tabChange(null, this.props.match.path)
+  }
+  
   render() {
     const { classes } = this.props;
     const { expanded } = this.state;
