@@ -88,6 +88,10 @@ const styles = theme => ({
     width: '100%', // Fix IE11 issue.
     marginTop: theme.spacing.unit,
   },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
@@ -95,7 +99,6 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     flexShrink: 0,
     paddingRight: theme.spacing.unit * 3,
-
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
