@@ -1,7 +1,7 @@
 # PayPal Sandbox Dashboard
 ![PayPal-Sandbox-Dashboard](https://raw.githubusercontent.com/Fairbanks-io/PayPal-Sandbox-Dashboard/master/paypal-sandbox-dashboard.png)
 
-Test various features of the PayPal Sandbox using React.js and PayPal's REST SDKs. Provide your REST Client ID
+Test various features of the PayPal Sandbox using React.js and PayPal's REST SDKs.
 
 ##### Features
 * It's Open Source!
@@ -10,9 +10,13 @@ Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK
 * IPN Based Transaction Reports when used with [PayPal-IPN-Listener](https://github.com/Fairbanks-io/PayPal-IPN-Listener)
 * In-App Help & FAQs
 
-##### Setup Instructions
-* Ensure you have a running instance of MongoDB and appropriate connection details.
+##### Prerequisites
+* A running instance of MongoDB with associated user details
+* Node version 8 or higher
+* `yarn` or `npm` (hopefully `yarn`)
+* [PayPal-IPN-Listener](https://github.com/Fairbanks-io/PayPal-IPN-Listener) successfully verifying IPNs on your site
 
+##### Setup Instructions
 * Create a new REST API application on [Developer.PayPal.com](https://developer.paypal.com/) and take note of your **Sandbox** *ClientID* and *Secret*. (Live is supported by this app, but make note that **if Live credentials are used, real money will be moved!**)
 
 * Download this app's source code from Github. Extract to the folder of your choice and run `yarn install` to download dependencies.
@@ -32,10 +36,12 @@ Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK
 [PayPal Developer FAQs](https://developer.paypal.com/docs/faq/)
 
 ##### Bugs and Feature Requests
-For Help with Sandbox Dashboard Bugs and Feature Requests: [Open an Issue](https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard/issues)
+For Help with Sandbox Dashboard Bugs and Feature Requests: [Open a GitHub Issue](https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard/issues)
 
 For Help with PayPal Sandbox Setup and SDK Bugs: [Contact PayPal Technical Support](https://www.paypal-techsupport.com/)
 
 ##### Contributors
 * [bsord](https://github.com/bsord "bsord")
 * [jonfairbanks](https://github.com/jonfairbanks "jonfairbanks")
+
+
