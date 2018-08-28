@@ -55,6 +55,9 @@ class Help extends React.Component {
       expanded: expanded ? panel : false,
     });
   };
+  componentWillMount(){
+    this.props.tabChange(null, this.props.match.path)
+  }
 
   render() {
     const { classes } = this.props;

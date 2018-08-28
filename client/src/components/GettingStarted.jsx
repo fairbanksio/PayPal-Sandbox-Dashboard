@@ -84,6 +84,10 @@ class GettingStarted extends React.Component {
     this.setState({ clientID: "", clientSecret: "", saved: false })
   }
 
+  componentWillMount(){
+    this.props.tabChange(null, this.props.match.path)
+  }
+  
   componentDidMount() {
     if(this.state.clientID.length > 0 && this.state.clientSecret.length > 0) {
       this.setState({ saved: true })

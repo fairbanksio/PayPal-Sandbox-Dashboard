@@ -377,7 +377,7 @@ class PayPalPayments extends React.Component {
         this.executePayment();
       }
     }
-
+    this.props.tabChange(null, this.props.match.path)
   }
 
   executePayment(){
