@@ -107,102 +107,110 @@ class IpnList extends React.Component {
     return (
       this.props.ipns.length > 0 ? this.props.ipns.map(function(item, key) {
         return (
-          <ExpansionPanel key={key} CollapseProps={{ unmountOnExit: true }} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography className={classes.heading}>
-                {item.status === "VERIFIED"
-                  ? <i className="far fa-check-circle" style={{
-                      color: '#090',
-                      paddingRight: '25px'
-                    }}/>
-                  : <i className="far fa-times-circle" style={{
-                      color: '#D8000C',
-                      paddingRight: '25px'
-                    }}/>
-                }
-                <span style={{fontWeight: 375}}>
-                  {item.ipnMessage.txn_id
-                    ? <b>Transaction ID: </b>
-                    : <b>Billing Agreement Created</b>
+          <div style={{
+            position: 'absolute',
+            width: '100vw',
+            width: '100vh',
+            top: 0,
+            left: 0
+          }}> // Material UI Fix
+            <ExpansionPanel key={key} CollapseProps={{ unmountOnExit: true }} expanded={expanded === 'panel' + key} onChange={this.handleChange('panel' + key)}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}>
+                  {item.status === "VERIFIED"
+                    ? <i className="far fa-check-circle" style={{
+                        color: '#090',
+                        paddingRight: '25px'
+                      }}/>
+                    : <i className="far fa-times-circle" style={{
+                        color: '#D8000C',
+                        paddingRight: '25px'
+                      }}/>
                   }
-                  {item.ipnMessage.txn_id}
-                </span>
-              </Typography>
-              <Typography className={classes.secondaryHeading}>
-                <span style={{fontWeight: 350}}>{moment(item.timestamp).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>
-              </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>
-                <div style={{ width: '31%'}}>
-                  <Typography variant="caption">
-                    <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{item.ipnMessage.payment_status}</span>
-                    <span style={{ paddingRight: '25px' }}><b>IPN Status: </b>{item.status}</span>
-                    <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
-                    <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{'$' + item.ipnMessage.mc_gross}</span>
-                  </Typography>
-                  <Divider/>
-                  <div>
-                    <h4>IPN Message</h4>
-                    <CodeMirror
-                      ref='ipnMessage'
-                      value={JSON.stringify(item.ipnMessage, null, ' ')}
-                      options={{
-                        lineNumbers: true,
-                        mode: { name: 'javascript', json: true },
-                        theme: 'material',
-                        readOnly: 'nocursor' // Nocursor for proper mobile handling
-                      }}
-                      onChange={(editor, data, value) => {}}
-                      preserveScrollPosition={true}
-                    />
-                    <br />
-                    {this.state.copied
-                      ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
-                          <i className="fas fa-check"></i>
-                          <span style={{ marginLeft: 6 }}>Copied</span>
-                        </Button>
-                      : <CopyToClipboard text={JSON.stringify(this.state.ipnMessage, null, ' ')} onCopy={() => this.setState({copied: true})}>
-                          <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
-                            <i className="fas fa-copy"></i>
-                            <span style={{ marginLeft: 6 }}>Copy JSON</span>
-                          </Button>
-                        </CopyToClipboard>
+                  <span style={{fontWeight: 375}}>
+                    {item.ipnMessage.txn_id
+                      ? <b>Transaction ID: </b>
+                      : <b>Billing Agreement Created</b>
                     }
-                  </div>
-                  <br/><Divider/>
-                  <div>
-                    <h4>IPN Postback</h4>
-                    <CodeMirror
-                      ref='ipnPostback'
-                      value={JSON.stringify(item.ipnPostback, null, ' ')}
-                      options={{
-                        lineNumbers: true,
-                        mode: { name: 'javascript', json: true },
-                        theme: 'material',
-                        readOnly: 'nocursor' // Nocursor for proper mobile handling
-                      }}
-                      onChange={(editor, data, value) => {}}
-                      preserveScrollPosition={true}
-                    />
-                    <br />
-                    {this.state.copied
-                      ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
-                          <i className="fas fa-check"></i>
-                          <span style={{ marginLeft: 6 }}>Copied</span>
-                        </Button>
-                      : <CopyToClipboard text={JSON.stringify(this.state.ipnPostback, null, ' ')} onCopy={() => this.setState({copied: true})}>
-                          <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
-                            <i className="fas fa-copy"></i>
-                            <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                    {item.ipnMessage.txn_id}
+                  </span>
+                </Typography>
+                <Typography className={classes.secondaryHeading}>
+                  <span style={{fontWeight: 350}}>{moment(item.timestamp).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>
+                </Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <Typography>
+                  <div style={{ width: '31%'}}>
+                    <Typography variant="caption">
+                      <span style={{ paddingRight: '25px' }}><b>Payment Status: </b>{item.ipnMessage.payment_status}</span>
+                      <span style={{ paddingRight: '25px' }}><b>IPN Status: </b>{item.status}</span>
+                      <span style={{ paddingRight: '25px' }}><b>Buyer: </b>{item.ipnMessage.payer_email + ' (' + item.ipnMessage.payer_id + ')'}</span>
+                      <span style={{ paddingRight: '25px' }}><b>Payment Amount: </b>{'$' + item.ipnMessage.mc_gross}</span>
+                    </Typography>
+                    <Divider/>
+                    <div>
+                      <h4>IPN Message</h4>
+                      <CodeMirror
+                        ref='ipnMessage'
+                        value={JSON.stringify(item.ipnMessage, null, ' ')}
+                        options={{
+                          lineNumbers: true,
+                          mode: { name: 'javascript', json: true },
+                          theme: 'material',
+                          readOnly: 'nocursor' // Nocursor for proper mobile handling
+                        }}
+                        onChange={(editor, data, value) => {}}
+                        preserveScrollPosition={true}
+                      />
+                      <br />
+                      {this.state.copied
+                        ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
+                            <i className="fas fa-check"></i>
+                            <span style={{ marginLeft: 6 }}>Copied</span>
                           </Button>
-                        </CopyToClipboard>
-                    }
+                        : <CopyToClipboard text={JSON.stringify(this.state.ipnMessage, null, ' ')} onCopy={() => this.setState({copied: true})}>
+                            <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
+                              <i className="fas fa-copy"></i>
+                              <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                            </Button>
+                          </CopyToClipboard>
+                      }
+                    </div>
+                    <br/><Divider/>
+                    <div>
+                      <h4>IPN Postback</h4>
+                      <CodeMirror
+                        ref='ipnPostback'
+                        value={JSON.stringify(item.ipnPostback, null, ' ')}
+                        options={{
+                          lineNumbers: true,
+                          mode: { name: 'javascript', json: true },
+                          theme: 'material',
+                          readOnly: 'nocursor' // Nocursor for proper mobile handling
+                        }}
+                        onChange={(editor, data, value) => {}}
+                        preserveScrollPosition={true}
+                      />
+                      <br />
+                      {this.state.copied
+                        ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
+                            <i className="fas fa-check"></i>
+                            <span style={{ marginLeft: 6 }}>Copied</span>
+                          </Button>
+                        : <CopyToClipboard text={JSON.stringify(this.state.ipnPostback, null, ' ')} onCopy={() => this.setState({copied: true})}>
+                            <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
+                              <i className="fas fa-copy"></i>
+                              <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                            </Button>
+                          </CopyToClipboard>
+                      }
+                    </div>
                   </div>
-                </div>
-              </Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+                </Typography>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </div>
         )
       }, this) : null
     );
