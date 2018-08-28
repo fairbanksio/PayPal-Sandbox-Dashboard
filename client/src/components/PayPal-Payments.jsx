@@ -22,6 +22,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import Chip from '@material-ui/core/Chip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 require('codemirror/mode/javascript/javascript');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -100,6 +102,13 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
     paddingRight: theme.spacing.unit * 3,
   },
+  chip: {
+    margin: theme.spacing.unit,
+  },
+  progress: {
+    marginLeft: theme.spacing.unit * 1.5,
+    marginRight: theme.spacing.unit
+  }
 });
 
 function getSteps() {
@@ -219,6 +228,7 @@ class PayPalPayments extends React.Component {
     this.setState({activeStep: 0, pData: null});
     localStorage.setItem("step", 0);
     localStorage.setItem("pData", null);
+    this.setState({chipStatus:''})
   }
 
   isStepSkipped(step) {
@@ -233,6 +243,8 @@ class PayPalPayments extends React.Component {
       skipped: new Set(),
       expanded: "panel1",
       mode: 'quick',
+      chipStatus: '',
+      chipIndicator: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.createPayment = this.createPayment.bind(this);
@@ -267,6 +279,7 @@ class PayPalPayments extends React.Component {
     var apiSecret = localStorage.getItem("clientSecret")
     var itemName = localStorage.getItem("pItemName")
     var itemCost = localStorage.getItem("pItemCost")
+    this.setState({chipStatus:'Creating payment...', chipIndicator:'loading'})
     console.log(itemName);
     console.log(itemCost);
     var redirectURL = 'https://'+ serverHost + '/payments'
@@ -313,17 +326,22 @@ class PayPalPayments extends React.Component {
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
     .then(response => {
-        return response.json()
+        if (!response.ok) { throw response }
+        return response.json()  //we only get here if there is no error
       }).then(data => {
         if(data.response){
-          //better error handling needed here.
-          console.log(data)
-          //this.setState({pData:data});
+          var sdkError = 'PayPal SDK Failure: ' + data.response.details[0].issue + '. (' + data.response.debug_id + ')'
+          this.setState({chipStatus:sdkError, chipIndicator:'error'})
         } else {
           //this.setState({paymentStatus:"Redirecting for approval",activeStep: 2});
           //this.setState({paymentStatus:JSON.stringify(data.response)});
-          this.setState({pData:data});
-          this.setState({activeStep: 1});
+          this.setState({
+            chipStatus:'Billing plan created successfully!',
+            chipIndicator:'success',
+            pData:data,
+            activeStep: 1
+          });
+
           localStorage.setItem("step", 1);
           localStorage.setItem("pRedirect", data.links[1].href);
 
@@ -334,12 +352,15 @@ class PayPalPayments extends React.Component {
           }
           //window.location = data.links[1].href;
         }
-      })
+      }).catch( err => {
+            this.setState({chipStatus:'Error making request to API ('+url+'): ' + err.status + ' - ' + err.statusText, chipIndicator:'error'})
+        })
   }
 
   approvePayment() {
     localStorage.setItem("pData",JSON.stringify(this.state.pData));
     localStorage.setItem("step",2);
+    this.setState({chipStatus:'Redirecting to PayPal for approval...', chipIndicator:'loading'})
     window.location = localStorage.getItem("pRedirect");
   }
 
@@ -351,11 +372,12 @@ class PayPalPayments extends React.Component {
       localStorage.setItem("payerId", urlParams.PayerID);
       this.setState({activeStep: 2});
       this.setState({pData:JSON.parse(localStorage.getItem("pData"))})
+      this.setState({chipStatus:'Billing agreement approved', chipIndicator:'success'})
       if(localStorage.getItem("mode") === 'quick'){
         this.executePayment();
       }
     }
-
+    this.props.tabChange(null, this.props.match.path)
   }
 
   executePayment(){
@@ -367,7 +389,7 @@ class PayPalPayments extends React.Component {
     console.log(paymentId);
     var url = 'https://'+ serverHost + '/api/execute-payment'
     var data = {apiCredentials: {key:apiKey, secret:apiSecret}, paymentId: paymentId, PayerID:payerId}
-
+    this.setState({chipStatus:'Executing payment...', chipIndicator:'loading'})
     fetch(url, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, cors, *same-origin
@@ -382,23 +404,46 @@ class PayPalPayments extends React.Component {
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
     .then(response => {
+        if (!response.ok) { throw response }
         return response.json()
       }).then(data => {
         if(data.response){
-          //better error handling needed here.
-          console.log(data)
-          //this.setState({pData:data});
+          var sdkError = 'PayPal SDK Failure: ' + data.response.details[0].issue + '. (' + data.response.debug_id + ')'
+          this.setState({chipStatus:sdkError, chipIndicator:'error'})
         } else {
           this.setState({activeStep: 3});
           this.setState({pData:data});
+          this.setState({chipStatus:'Billing agreement has been executed successfully!', chipIndicator:'success'})
         }
-      })
+      }).catch( err => {
+            this.setState({chipStatus:'Error making request to API ('+url+'): ' + err.status + ' - ' + err.statusText, chipIndicator:'error'})
+        })
   }
 
   handleModeChange = event => {
     this.setState({ mode: event.target.value });
     localStorage.setItem("mode", event.target.value)
   };
+
+  getChipIcon(chipIndicator){
+    const { classes } = this.props;
+    switch (chipIndicator) {
+      case 'loading':
+        return (
+          <CircularProgress className={classes.progress} size={15} />
+        );
+      case 'success':
+        return (
+          <i className="far fa-check-circle" style={{color: '#090',padding: '8px 12px'}}/>
+        );
+      case 'error':
+        return (
+          <i className="far fa-times-circle" style={{color: '#900',padding: '8px 12px'}}/>
+        );
+      default:
+        return 'Unknown';
+    }
+  }
 
   render() {
     const { classes } = this.props;
@@ -407,6 +452,8 @@ class PayPalPayments extends React.Component {
     var pData = this.state.pData;
     var pDataStringified = JSON.stringify(pData, null, ' ');
     const { expanded } = this.state;
+    var {chipStatus} = this.state;
+    var {chipIndicator} = this.state;
     return (
       <TabContainer>
         <div>
@@ -505,6 +552,17 @@ class PayPalPayments extends React.Component {
                     </div>
                   )}
                 </div>
+
+                {chipStatus !== '' ? (
+                  <Chip
+                    avatar={
+                      this.getChipIcon(chipIndicator)
+                    }
+                    label={chipStatus}
+                    className={classes.chip}
+                  />
+                ):(null)}
+
               </div>
             </Paper>
             {pData ? (

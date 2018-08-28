@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import PayPalPayments from "./components/PayPal-Payments.jsx";
 import GettingStarted from "./components/GettingStarted.jsx";
 import BillingAgreements from "./components/BillingAgreements.jsx";
@@ -33,42 +33,48 @@ const styles = theme => ({
 
 class ScrollableTabsButtonForce extends React.Component {
   state = {
-    value: 0,
+    activeTab: '/getting-started',
   };
 
-  handleChange = (event, value) => {
-    this.setState({ value });
-    //console.log(value); // Enable to see the ID of the current tab (0 - x)
+  constructor(props) {
+    super(props);
+    this.handleTab = this.handleTab.bind(this);
+  }
+
+  handleTab = (event, value) => {
+    this.setState({ activeTab:value });
   };
 
   render() {
     const { classes } = this.props;
-    const { value } = this.state;
+    const { activeTab } = this.state;
     return (
       <Router>
         <div className={classes.root}>
           <AppBar position="static" color="default">
             <Tabs
-              value={value}
-              onChange={this.handleChange}
+              value={activeTab}
+              onChange={this.handleTab}
               scrollable
               scrollButtons="on"
               indicatorColor="primary"
               textColor="primary"
             >
-              <Tab label="Getting Started" icon={<i className="fab fa-2x fa-paypal"/>} component={Link} to="/getting-started" />
-              <Tab label="Sale Payments" icon={<i className="fas fa-2x fa-dollar-sign"/>} component={Link} to="/payments" />
-              <Tab label="Billing Agreements" icon={<i className="far fa-2x fa-calendar-check"/>} component={Link} to="/agreements"/>
-              <Tab label="Transaction Reports" icon={<i className="far fa-2x fa-chart-bar"/>} component={Link} to="/transaction-reports"/>
-              <Tab label="Help & FAQs" icon={<i className="fas fa-2x fa-question-circle"/>} component={Link} to="/help"/>
+              <Tab value="/getting-started" label="Getting Started" icon={<i className="fab fa-2x fa-paypal"/>} component={Link} to="/getting-started" />
+              <Tab value="/payments" label="Sale Payments" icon={<i className="fas fa-2x fa-dollar-sign"/>} component={Link} to="/payments" />
+              <Tab value="/agreements" label="Billing Agreements" icon={<i className="far fa-2x fa-calendar-check"/>} component={Link} to="/agreements"/>
+              <Tab value="/transaction-reports" label="Transaction Reports" icon={<i className="far fa-2x fa-chart-bar"/>} component={Link} to="/transaction-reports"/>
+              <Tab value="/help" label="Help & FAQs" icon={<i className="fas fa-2x fa-question-circle"/>} component={Link} to="/help"/>
             </Tabs>
           </AppBar>
-          <Route path="/getting-started" component={GettingStarted} />
-          <Route path="/payments" component={PayPalPayments} />
-          <Route path="/agreements" component={BillingAgreements} />
-          <Route path="/transaction-reports" component={TransactionReports} />
-          <Route path="/help" component={Help} />
-          <Route exact path="/" component={GettingStarted} />
+          <Switch>
+            <Route path="/getting-started" render={routeProps => (<GettingStarted {...routeProps} tabChange={this.handleTab}/> )}/>
+            <Route path="/payments" render={routeProps => (<PayPalPayments {...routeProps} tabChange={this.handleTab}/> )}/>
+            <Route path="/agreements" render={routeProps => (<BillingAgreements {...routeProps} tabChange={this.handleTab}/> )}/>
+            <Route path="/transaction-reports" render={routeProps => (<TransactionReports {...routeProps} tabChange={this.handleTab}/> )}/>
+            <Route path="/help" render={routeProps => (<Help {...routeProps} tabChange={this.handleTab}/> )}/>
+            <Route exact path="/" render={routeProps => (<GettingStarted {...routeProps} tabChange={this.handleTab}/> )}/>
+          </Switch>
         </div>
       </Router>
     );

@@ -101,6 +101,10 @@ class IpnList extends React.Component {
     });
   };
 
+  componentWillMount(){
+    this.props.tabChange(null, this.props.match.path)
+  }
+  
   render() {
     const { classes } = this.props;
     const { expanded } = this.state;
@@ -154,7 +158,6 @@ class IpnList extends React.Component {
                     }
                   </Typography>
                   <Divider/>
-                  <div>
                     <h4>IPN Message</h4>
                     <CodeMirror
                       ref='ipnMessage'
@@ -181,7 +184,6 @@ class IpnList extends React.Component {
                           </Button>
                         </CopyToClipboard>
                     }
-                  </div>
                   <br/><Divider/>
                   <div>
                     <h4>IPN Postback</h4>
