@@ -87,7 +87,7 @@ class GettingStarted extends React.Component {
   componentWillMount(){
     this.props.tabChange(null, this.props.match.path)
   }
-  
+
   componentDidMount() {
     if(this.state.clientID.length > 0 && this.state.clientSecret.length > 0) {
       this.setState({ saved: true })
@@ -153,6 +153,7 @@ class GettingStarted extends React.Component {
                         onChange={this.handleChange}
                         required={true}
                         value={this.state.clientSecret.length > 0 ? this.state.clientSecret : null}
+                        // eslint-disable-next-line
                         required={true}
                       />
                     </FormControl>
