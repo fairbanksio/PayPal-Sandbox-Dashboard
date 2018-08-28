@@ -32,11 +32,9 @@ app.post('/api/create-payment', function(req, res){
 
 	createPayment(apiKey, apiSecret, redirectURL, payment, function(paymentResults){
 		res.json(paymentResults)
-		console.log("Payment data sent back to user")
+		logger.info("Payment data sent back to user: " + JSON.stringify(paymentResults));
 	});
-
 })
-
 
 // Create Billing Agreement
 app.post('/api/create-billingplan', function(req, res){
@@ -69,7 +67,7 @@ app.post('/api/execute-payment', function(req, res){
 
 	executePayment(apiKey, apiSecret, payerId, paymentId, function(paymentResults){
 		res.json(paymentResults);
-		console.log("User has approved the payment");
+		logger.info("User has approved the payment: " + JSON.stringify(paymentResults));
 	})
 })
 
@@ -78,26 +76,25 @@ app.post('/api/execute-agreement', function(req, res){
 	var paymentToken = req.body.token
 	var apiKey = req.body.apiCredentials.key
 	var apiSecret = req.body.apiCredentials.secret
-	console.log("User has approved the agreement");
 	executeAgreement(apiKey, apiSecret, paymentToken, function(agreement){
-		//console.log(payment)
+		logger.info('User has approved the agreement: '+ JSON.stringify(agreement));
 		res.json(agreement);
 	})
 })
 
 app.get('/api/ipnData', function(req, res){
-    connection.db.collection("ipn", function(err, collection){
-            collection.find({}).sort({ timestamp: -1 }).limit(50).toArray(function(err, data){
-                    res.json(data);
-            })
-    });
+  connection.db.collection("ipn", function(err, collection){
+    collection.find({}).sort({ timestamp: -1 }).limit(50).toArray(function(err, data){
+      res.json(data);
+    })
+  });
 })
 
 app.get('/api/ipnCount', function(req, res){
 	connection.db.collection("ipn", function(err, collection){
-			collection.find({}).count(function(err, data){
-					res.json(data);
-			})
+		collection.find({}).count(function(err, data){
+			res.json(data);
+		})
 	});
 })
 
@@ -113,15 +110,12 @@ function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 			}
 		});
 
-
-
 		paypal.payment.create(paymentJSON, function (error, payment) {
 			if (error) {
-					callback(error)
-					//throw error;
+				callback(error)
 			} else {
-					console.log("Payment Created");
-					callback(payment)
+				logger.info("Payment Created: " + JSON.stringify(payment));
+				callback(payment)
 			}
 		});
 	}
@@ -140,41 +134,37 @@ function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, callback){
 		});
 
 		var billingPlanUpdateAttributes = [
-		    {
-		        "op": "replace",
-		        "path": "/",
-		        "value": {
-		            "state": "ACTIVE"
-		        }
-		    }
+			{
+				"op": "replace",
+				"path": "/",
+				"value": {
+					"state": "ACTIVE"
+				}
+			}
 		];
 
 		paypal.billingPlan.create(billingPlanAttributes, function (error, billingPlan) {
-		    if (error) {
-		        console.log(error);
-						callback(error)
-						//throw error;
-		    } else {
-		        console.log("Billing plan created");
-
-						// Activate the plan by changing status to Active
-		        paypal.billingPlan.update(billingPlan.id, billingPlanUpdateAttributes, function (error, response) {
-		            if (error) {
-		                console.log(error);
-		                //throw error;
-		            } else {
-		                console.log("Billing plan state changed to " + billingPlan.state);
-		                callback(billingPlan)
-		            }
-		        });
-		    }
+			if (error) {
+				logger.error("Error Creating Billing Plan: " + error);
+				callback(error)
+			} else {
+				logger.info("Billing plan created: " + JSON.stringify(billingPlan));
+				// Activate the plan by changing status to Active
+				paypal.billingPlan.update(billingPlan.id, billingPlanUpdateAttributes, function (error, response) {
+					if (error) {
+						logger.error("Error activating billing plan: " + error);
+					} else {
+						logger.info("Billing plan state changed to " + billingPlan.state);
+						callback(billingPlan)
+					}
+				});
+			}
 		});
 	}
 }
 
 function createBillingAgreement(apiKey, apiSecret, billingAgreementAttributes, callback){
 	if(apiKey && apiSecret){
-
 		// Configure PayPal SDK
 		paypal.configure({
 			'mode': 'sandbox',
@@ -187,15 +177,14 @@ function createBillingAgreement(apiKey, apiSecret, billingAgreementAttributes, c
 
     // Use activated billing plan to create agreement
     paypal.billingAgreement.create(billingAgreementAttributes, function (error, billingAgreement) {
-        if (error) {
-            console.log(error);
-            callback(error)
-        } else {
-            console.log("Billing agreement created from billing plan");
-						callback(billingAgreement)
-        }
+	    if (error) {
+        logger.error("Error with billing plan: " + error);
+        callback(error)
+	    } else {
+        logger.info("Billing agreement created from billing plan: " + JSON.stringify(billingAgreement));
+				callback(billingAgreement)
+	    }
     });
-
 	}
 }
 
@@ -210,18 +199,16 @@ function executePayment(apiKey, apiSecret, payerId, paymentId, callback){
 			}
 		});
 
-		var execute_payment_json = {
-				"payer_id": payerId
-		};
+		var execute_payment_json = { "payer_id": payerId	};
+
 		paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
-				if (error) {
-						console.log(error.response);
-						callback(error);
-						//throw error;
-				} else {
-						console.log("Payment executed");
-						callback(payment);
-				}
+			if (error) {
+				logger.error('Error executing payment: ' + error.response);
+				callback(error);
+			} else {
+				logger.info("Payment executed: " + JSON.stringify(payment));
+				callback(payment);
+			}
 		});
 }
 
@@ -237,20 +224,19 @@ function executeAgreement(apiKey, apiSecret, paymentToken, callback){
 		});
 
 		paypal.billingAgreement.execute(paymentToken, {}, function (error, billingAgreement) {
-
-
-				if (error) {
-						console.log(error);
-						callback(error);
-				} else {
-						console.log("Billing agreement has been executed");
-						callback(billingAgreement);
-				}
+			if (error) {
+				logger.error('Execute Agreement Error: ' + error);
+				callback(error);
+			} else {
+				logger.info("Billing agreement has been executed: " + JSON.stringify(billingAgreement));
+				callback(billingAgreement);
+			}
 		});
 }
+
 // Serve react-app client application
 app.get('*', (req,res) => {
- res.sendFile(path.join(__dirname, 'client/build/index.html'));
+	res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
 
 var port = null;
