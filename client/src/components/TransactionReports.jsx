@@ -292,7 +292,7 @@ class TransactionReports extends React.Component {
           <h3>Transaction Reports</h3>
           {this.state.ipnData.length > 0
             ?<div style={{
-              width: '97vw',
+              width: '96.6vw',
               height: '100vh',
             }}>
               <IpnList {...this.props} ipns={this.state.ipnData}/>
