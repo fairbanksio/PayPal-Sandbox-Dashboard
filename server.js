@@ -87,7 +87,7 @@ app.post('/api/execute-agreement', function(req, res){
 
 app.get('/api/ipnData', function(req, res){
     connection.db.collection("ipn", function(err, collection){
-            collection.find({}).sort({ timestamp: -1 }).limit(50).toArray(function(err, data){
+            collection.find({}).sort({ timestamp: -1 }).limit(25).toArray(function(err, data){ // .limit() is not a valid fix
                     res.json(data);
             })
     });
@@ -332,8 +332,6 @@ function executeAgreement(apiKey, apiSecret, paymentToken, callback){
 		});
 
 		paypal.billingAgreement.execute(paymentToken, {}, function (error, billingAgreement) {
-
-
 				if (error) {
 						console.log(error);
 						callback(error);
