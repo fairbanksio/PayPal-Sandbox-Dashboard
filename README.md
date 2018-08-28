@@ -1,7 +1,7 @@
 # PayPal Sandbox Dashboard
 ![PayPal-Sandbox-Dashboard](https://raw.githubusercontent.com/Fairbanks-io/PayPal-Sandbox-Dashboard/master/paypal-sandbox-dashboard.png)
 
-Test various features of the PayPal Sandbox using React.js and PayPal's REST SDKs. Provide your REST Client ID
+Test various features of the PayPal Sandbox using React.js and PayPal's REST SDKs. 
 
 ##### Features
 * It's Open Source!
@@ -32,7 +32,7 @@ Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK
 [PayPal Developer FAQs](https://developer.paypal.com/docs/faq/)
 
 ##### Bugs and Feature Requests
-For Help with Sandbox Dashboard Bugs and Feature Requests: [Open an Issue](https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard/issues)
+For Help with Sandbox Dashboard Bugs and Feature Requests: [Open a GitHub Issue](https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard/issues)
 
 For Help with PayPal Sandbox Setup and SDK Bugs: [Contact PayPal Technical Support](https://www.paypal-techsupport.com/)
 
