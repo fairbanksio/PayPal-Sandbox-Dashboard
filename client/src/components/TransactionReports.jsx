@@ -61,7 +61,8 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    height: '100%',
+    backgroundColor: '#FAFAFA' || theme.palette.background.paper,
   },
   button: {
     margin: theme.spacing.unit,
@@ -119,7 +120,13 @@ class IpnList extends React.Component {
                       paddingRight: '25px'
                     }}/>
                 }
-                <span style={{fontWeight: 375}}><b>Transaction ID: </b>{item.ipnMessage.txn_id}</span>
+                <span style={{fontWeight: 375}}>
+                  {item.ipnMessage.txn_id
+                    ? <b>Transaction ID: </b>
+                    : <b>Billing Agreement Created</b>
+                  }
+                  {item.ipnMessage.txn_id}
+                </span>
               </Typography>
               <Typography className={classes.secondaryHeading}>
                 <span style={{fontWeight: 350}}>{moment(item.timestamp).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>

@@ -19,6 +19,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
+    height: '100%',
     backgroundColor: '#FAFAFA' || theme.palette.background.paper,
   },
   button: {
@@ -76,13 +77,13 @@ class Help extends React.Component {
                   <li>Download this app's source code from Github.</li>
                   <li>Extract to the folder of your choice and run <span style={{ fontFamily: 'Source Code Pro, monospace' }}>yarn install</span> to download dependencies.</li>
                   <li>Launch the app using <span style={{ fontFamily: 'Source Code Pro, monospace' }}>MONGO_URI='mongodb://user:password@mysite.io/paypal' REACT_APP_HOST='sandbox.mysite.io' yarn start</span>.</li>
-                  <li>The app can be ran on an alternate port by passing <span style={{ fontFamily: 'Source Code Pro, monospace' }}>PORT=3001</span> along with the startup command above.</li>
+                  <li>Optional: The app can be ran on an alternate port by passing <span style={{ fontFamily: 'Source Code Pro, monospace' }}>PORT=3001</span> along with the startup command above.</li>
                 </ul>
                 <h4>Notable Files</h4>
                 <table>
                   <thead>
-                    <td><h5>File Location></h5></td>
-                    <td><h5>Comments</h5></td>
+                    <td><b>File Location</b></td>
+                    <td><b>Comments</b></td>
                   </thead>
                   <tr>
                     <td style={{ fontFamily: 'Source Code Pro, monospace' }}>server.js</td>
@@ -116,7 +117,7 @@ class Help extends React.Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                To get started, with test payments in the PayPal Sandbox, you will need to provide a <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Client ID</span> and <span style={{ fontFamily: 'Source Code Pro, monospace' }}><b>Secret</b></span> for the PayPal REST SDK.
+                To get started, with test payments in the PayPal Sandbox, you will need to provide a <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Client ID</span> and <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Secret</span> for the PayPal REST SDK.
                 <b>These details are not saved on the server at any point</b>, but stored within the browser and securely transmitted between you and PayPal.
                 For help getting setup, please checkout the setup instructions below:
                 <ul>

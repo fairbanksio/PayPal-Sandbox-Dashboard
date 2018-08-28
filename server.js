@@ -87,10 +87,8 @@ app.post('/api/execute-agreement', function(req, res){
 
 app.get('/api/ipnData', function(req, res){
     connection.db.collection("ipn", function(err, collection){
-            console.time('Loaded IPN Data from DB:');
-            collection.find({}).sort({ timestamp: -1 }).limit(50).toArray(function(err, data){
+            collection.find({}).sort({ timestamp: -1 }).limit(25).toArray(function(err, data){ // .limit() is not a valid fix
                     res.json(data);
-                    console.timeEnd('Loaded IPN Data from DB:');
             })
     });
 })
@@ -115,8 +113,6 @@ function createPayment(apiKey, apiSecret, redirectURL, paymentJSON, callback){
 			}
 		});
 
-
-
 		paypal.payment.create(paymentJSON, function (error, payment) {
 			if (error) {
 					callback(error)
@@ -140,6 +136,103 @@ function createBillingPlan(apiKey, apiSecret, billingPlanAttributes, callback){
 			'custom': 'header'
 			}
 		});
+
+		var isoDate = new Date();
+		isoDate.setSeconds(isoDate.getSeconds() + 10);
+		isoDate = isoDate.toISOString().slice(0,19) + 'Z';
+
+		var billingPlanAttributes = {
+		    "description": "Create Plan for Regular",
+		    "merchant_preferences": {
+		        "auto_bill_amount": "yes",
+		        "cancel_url": redirectURL,
+		        "initial_fail_amount_action": "continue",
+		        "max_fail_attempts": "1",
+		        "return_url": redirectURL,
+		        "setup_fee": {
+		            "currency": "USD",
+		            "value": "25"
+		        }
+		    },
+		    "name": "Testing1-Regular1",
+		    "payment_definitions": [
+		        {
+		            "amount": {
+		                "currency": "USD",
+		                "value": "100"
+		            },
+		            "charge_models": [
+		                {
+		                    "amount": {
+		                        "currency": "USD",
+		                        "value": "10.60"
+		                    },
+		                    "type": "SHIPPING"
+		                },
+		                {
+		                    "amount": {
+		                        "currency": "USD",
+		                        "value": "20"
+		                    },
+		                    "type": "TAX"
+		                }
+		            ],
+		            "cycles": "0",
+		            "frequency": "DAY",
+		            "frequency_interval": "1",
+		            "name": "Regular 1",
+		            "type": "REGULAR"
+		        },
+		        {
+		            "amount": {
+		                "currency": "USD",
+		                "value": "20"
+		            },
+		            "charge_models": [
+		                {
+		                    "amount": {
+		                        "currency": "USD",
+		                        "value": "10.60"
+		                    },
+		                    "type": "SHIPPING"
+		                },
+		                {
+		                    "amount": {
+		                        "currency": "USD",
+		                        "value": "20"
+		                    },
+		                    "type": "TAX"
+		                }
+		            ],
+		            "cycles": "4",
+		            "frequency": "DAY",
+		            "frequency_interval": "1",
+		            "name": "Trial 1",
+		            "type": "TRIAL"
+		        }
+		    ],
+		    "type": "INFINITE"
+		};
+
+		var billingAgreementAttributes = {
+		    "name": "Fast Speed Agreement",
+		    "description": "Agreement for Fast Speed Plan",
+		    "start_date": isoDate,
+		    "plan": {
+		        "id": "P-0NJ10521L3680291SOAQIVTQ"
+		    },
+		    "payer": {
+		        "payment_method": "paypal"
+		    },
+		    "shipping_address": {
+		        "line1": "StayBr111idge Suites",
+		        "line2": "Cro12ok Street",
+		        "city": "San Jose",
+		        "state": "CA",
+		        "postal_code": "95112",
+		        "country_code": "US"
+		    }
+		};
 
 		var billingPlanUpdateAttributes = [
 		    {
@@ -239,8 +332,6 @@ function executeAgreement(apiKey, apiSecret, paymentToken, callback){
 		});
 
 		paypal.billingAgreement.execute(paymentToken, {}, function (error, billingAgreement) {
-
-
 				if (error) {
 						console.log(error);
 						callback(error);
