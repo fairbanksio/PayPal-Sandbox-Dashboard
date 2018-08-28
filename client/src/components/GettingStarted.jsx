@@ -153,8 +153,6 @@ class GettingStarted extends React.Component {
                         onChange={this.handleChange}
                         required={true}
                         value={this.state.clientSecret.length > 0 ? this.state.clientSecret : null}
-                        // eslint-disable-next-line
-                        required={true}
                       />
                     </FormControl>
                 }
