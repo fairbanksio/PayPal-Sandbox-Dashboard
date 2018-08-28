@@ -106,7 +106,7 @@ class Help extends React.Component {
                   </tr>
                 </table>
                 <br/>
-                For Bugs and Feature Requests, please see <a href='https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard' target='_blank'>the GitHub repo</a>.
+                For Bugs and Feature Requests, please see <a href='https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard' target='_blank' rel='noopener noreferrer'>the GitHub repo</a>.
                 <br/>
               </Typography>
             </ExpansionPanelDetails>
@@ -124,18 +124,18 @@ class Help extends React.Component {
                 <b>These details are not saved on the server at any point</b>, but stored within the browser and securely transmitted between you and PayPal.
                 For help getting setup, please checkout the setup instructions below:
                 <ul>
-                  <li>Create a PayPal Developer account at <a href='https://developer.paypal.com/' target='_blank'>Developer.PayPal.com</a></li>
+                  <li>Create a PayPal Developer account at <a href='https://developer.paypal.com/' target='_blank' rel='noopener noreferrer'>Developer.PayPal.com</a></li>
                   <li>First, create a new Sandbox merchant account. Be sure to create a Business account and might as well pre-fill it with test money (we'll use it for testing).</li>
                   <li>Once signed in, navigate to <i>My Apps & Credentials</i> and Create a New REST API App.</li>
                   <li>Provide app details such as the name and the associated account. Once done, click <i>Create App</i></li>
                   <li>Take note of the <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Client ID</span> & <span style={{ fontFamily: 'Source Code Pro, monospace' }}>Secret</span> and store them somewhere safe. These are the keys to paymenst with your Sandbox PayPal account!</li>
-                  <li>Use the newly generated credentials on the <a href='/getting-started' target='_blank'>Getting Started</a> page.</li>
-                  <li>Once your credentials are set, it time to <a href='/sale-payments' target='_blank'>test some payments!</a></li>
-                  <li><i><a href='https://www.paypal.com/us/smarthelp/article/How-do-I-create-REST-API-credentials-ts1949' target='_blank'>More Info...</a></i></li>
+                  <li>Use the newly generated credentials on the <a href='/getting-started' target='_blank' rel='noopener noreferrer'>Getting Started</a> page.</li>
+                  <li>Once your credentials are set, it time to <a href='/sale-payments' target='_blank' rel='noopener noreferrer'>test some payments!</a></li>
+                  <li><i><a href='https://www.paypal.com/us/smarthelp/article/How-do-I-create-REST-API-credentials-ts1949' target='_blank' rel='noopener noreferrer'>More Info...</a></i></li>
                 </ul>
-                Looking for more information on the APIs used in this demo? Checkout the <a href='https://developer.paypal.com/docs/api/payments/v1/#payment_list' target='_blank'>Payments API docs</a>.
+                Looking for more information on the APIs used in this demo? Checkout the <a href='https://developer.paypal.com/docs/api/payments/v1/#payment_list' target='_blank' rel='noopener noreferrer'>Payments API docs</a>.
                 <br/><br/>
-                <a href='https://developer.paypal.com/docs/faq/' target='_blank'>PayPal Developer FAQs</a>
+                <a href='https://developer.paypal.com/docs/faq/' target='_blank' rel='noopener noreferrer'>PayPal Developer FAQs</a>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
