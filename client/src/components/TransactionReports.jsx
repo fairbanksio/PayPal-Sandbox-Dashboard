@@ -166,6 +166,8 @@ class IpnList extends React.Component {
                         lineNumbers: true,
                         mode: { name: 'javascript', json: true },
                         theme: 'material',
+                        lineWrapping: true,
+                        textWrapping: true,
                         readOnly: 'nocursor' // Nocursor for proper mobile handling
                       }}
                       onChange={(editor, data, value) => {}}
