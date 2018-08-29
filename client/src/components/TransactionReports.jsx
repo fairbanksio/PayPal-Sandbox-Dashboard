@@ -104,7 +104,7 @@ class IpnList extends React.Component {
   componentWillMount(){
     this.props.tabChange(null, this.props.match.path)
   }
-  
+
   render() {
     const { classes } = this.props;
     const { expanded } = this.state;
@@ -166,6 +166,8 @@ class IpnList extends React.Component {
                         lineNumbers: true,
                         mode: { name: 'javascript', json: true },
                         theme: 'material',
+                        lineWrapping: true,
+                        textWrapping: true,
                         readOnly: 'nocursor' // Nocursor for proper mobile handling
                       }}
                       onChange={(editor, data, value) => {}}
