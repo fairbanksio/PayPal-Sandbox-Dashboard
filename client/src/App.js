@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { BrowserRouter as Router, Route, Switch, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Link} from "react-router-dom";
 import PayPalPayments from "./components/PayPal-Payments.jsx";
 import GettingStarted from "./components/GettingStarted.jsx";
 import BillingAgreements from "./components/BillingAgreements.jsx";
@@ -31,59 +31,26 @@ const styles = theme => ({
   },
 });
 
-const userAuth = {
-  isAuthenticated: false,
-  authenticate() {
-    this.isAuthenticated = true
-  },
-  signout() {
-    this.isAuthenticated = false
-  }
-}
-
 class ScrollableTabsButtonForce extends React.Component {
 
   constructor(props) {
     super(props);
     this.handleTab = this.handleTab.bind(this);
-    this.auth = this.auth.bind(this);
     this.state = {
       clientID: localStorage.getItem("clientID") || "",
       clientSecret: localStorage.getItem("clientSecret") || "",
       activeTab: '/getting-started',
-      authenticated: false
     };
   }
 
-  auth(action){
-    switch(action){
-      case 'authenticate':
-        userAuth.authenticate()
-        this.setState({authenticated:true})
-        break;
-      case 'signout':
-        userAuth.signout()
-        this.setState({authenticated:false})
-        break;
-    }
-
-  }
-
   handleTab = (event, value) => {
-    value === "/" ? value = "/getting-started" : value = value
+    value = value === "/" ? "/getting-started" : value
     this.setState({ activeTab:value });
   };
-
-  componentDidMount(){
-    if(this.state.clientID.length > 0 && this.state.clientSecret.length > 0){
-      userAuth.authenticate()
-    }
-  }
 
   render() {
     const { classes } = this.props;
     const { activeTab } = this.state;
-    const { authenticated } = this.state;
     return (
       <Router>
         <div className={classes.root}>
@@ -104,24 +71,24 @@ class ScrollableTabsButtonForce extends React.Component {
             </Tabs>
           </AppBar>
           <Switch>
-            <Route path="/getting-started" render={routeProps => (<GettingStarted {...routeProps} tabChange={this.handleTab} userAuth={this.auth}/> )}/>
+            <Route path="/getting-started"
+              render={routeProps => (<GettingStarted {...routeProps} tabChange={this.handleTab} /> )}/>
+
             <Route path="/payments"
-              render={(routeProps) => (
-                userAuth.isAuthenticated === true
-                  ? <PayPalPayments {...routeProps} tabChange={this.handleTab}/>
-                  : <GettingStarted {...routeProps} tabChange={this.handleTab} userAuth={this.auth}/>
-              )}
-            />
+              render={(routeProps) => (<PayPalPayments {...routeProps} tabChange={this.handleTab}/>)}/>
+
             <Route path="/agreements"
-              render={(routeProps) => (
-                userAuth.isAuthenticated === true
-                  ? <BillingAgreements {...routeProps} tabChange={this.handleTab}/>
-                  : <GettingStarted {...routeProps} tabChange={this.handleTab} userAuth={this.auth}/>
-              )}
-            />
-            <Route path="/transaction-reports" render={(routeProps) => ( <TransactionReports {...routeProps} tabChange={this.handleTab} userAuth={this.auth}/> )} />
-            <Route path="/help" render={(routeProps) => ( <Help {...routeProps} tabChange={this.handleTab} userAuth={this.auth}/> )} />
-            <Route exact path="/" render={routeProps => (<GettingStarted {...routeProps} tabChange={this.handleTab} userAuth={this.auth}/> )}/>
+              render={(routeProps) => (<BillingAgreements {...routeProps} tabChange={this.handleTab} />)}/>
+
+            <Route path="/transaction-reports"
+              render={(routeProps) => ( <TransactionReports {...routeProps} tabChange={this.handleTab} /> )} />
+
+            <Route path="/help"
+              render={(routeProps) => ( <Help {...routeProps} tabChange={this.handleTab} /> )} />
+
+            <Route exact path="/"
+              render={routeProps => (<GettingStarted {...routeProps} tabChange={this.handleTab} /> )}/>
+
           </Switch>
         </div>
       </Router>
