@@ -1,0 +1,7 @@
+{
+  "name": "PayPal Sandbox Dashboard",
+  "description": "Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK.",
+  "repository": "https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard",
+  "logo": "https://i.ytimg.com/vi/G9jruOBCtEw/maxresdefault.jpg",
+  "keywords": ["paypal", "reactjs", "material-ui"]
+}
