@@ -27,6 +27,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ApiLogin from './ApiLogin.jsx'
 
 require('codemirror/mode/javascript/javascript');
 require('codemirror/lib/codemirror.css');
@@ -117,6 +118,22 @@ const styles = theme => ({
   progress: {
     marginLeft: theme.spacing.unit * 1.5,
     marginRight: theme.spacing.unit
+  },
+  cover: {
+    position: 'absolute',
+    left: 0,
+    height: '100vh',
+    width: '100%',
+    zIndex: 1000,
+    backgroundColor: '#777',
+    opacity: 0.8,
+  },
+  coverLogin: {
+    position: 'absolute',
+    left: 0,
+    height: '100vh',
+    width: '100%',
+    zIndex: 1001,
   }
 });
 
@@ -369,6 +386,8 @@ class PayPalAgreements extends React.Component {
       mode: 'quick',
       chipStatus: '',
       chipIndicator: '',
+      clientID: localStorage.getItem("clientID") || "",
+      clientSecret: localStorage.getItem("clientSecret") || "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.createAgreement = this.createAgreement.bind(this);
@@ -512,16 +531,12 @@ class PayPalAgreements extends React.Component {
     var apiKey = localStorage.getItem("clientID")
     var apiSecret = localStorage.getItem("clientSecret")
     var billPlanId = localStorage.getItem("pBillPlanId")
-
     var agreementName = localStorage.getItem("agreementName")
     var agreementDesc = localStorage.getItem("agreementDesc")
-
     var agreementStart = new Date(localStorage.getItem("agreementStart")).toISOString().slice(0,19) + 'Z';;
-
     var isoDate = new Date();
     isoDate.setSeconds(isoDate.getSeconds() + 10);
     isoDate = isoDate.toISOString().slice(0,19) + 'Z';
-
 
     this.setState({chipStatus:'Creating billing agreement...', chipIndicator:'loading'})
     var billingAgreementAttributes = {
@@ -606,6 +621,11 @@ class PayPalAgreements extends React.Component {
       }
     }
     this.props.tabChange(null, this.props.match.path)
+    if(this.state.clientID.length > 0 && this.state.clientSecret.length > 0) {
+      this.enablePage()
+    }else {
+      this.disablePage()
+    }
   }
 
   executeAgreement(){
@@ -670,6 +690,18 @@ class PayPalAgreements extends React.Component {
     }
   }
 
+  disablePage() {
+    this.setState({
+       disablePage:true
+    });
+  }
+
+  enablePage() {
+    this.setState({
+       disablePage:false
+    });
+  }
+
   render() {
     const { classes } = this.props;
     const steps = getSteps(this.state.mode);
@@ -679,170 +711,177 @@ class PayPalAgreements extends React.Component {
     const { expanded } = this.state;
     var {chipStatus} = this.state;
     var {chipIndicator} = this.state;
+    var divStyle = {display:this.state.disablePage?'block':'none'};
     return (
-      <TabContainer>
-        <div>
-          <h4>Create Billing Agreement</h4>
+      <div style={{position:'relative'}}>
+        <div id="cover" style={divStyle} className={classes.cover}>
+
         </div>
-        <React.Fragment>
-          <CssBaseline />
-          <main className={classes.layout}>
-            <Paper className={classes.paper}>
-              <div className={classes.root}>
-                <FormControl component="fieldset" className={classes.formControl}>
-                  <FormLabel component="legend">Agreement Mode:</FormLabel>
-                  <RadioGroup
-                    aria-label="Mode"
-                    name="mode"
-                    className={classes.group}
-                    value={this.state.mode}
-                    onChange={this.handleModeChange}
-                  >
-                    <FormControlLabel value="quick" control={<Radio />} label="Quick" />
-                    <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-                  </RadioGroup>
-                  <FormHelperText>Quick agreements will be processed automatically, Custom agreements require user action for each step.</FormHelperText>
-                </FormControl>
-              </div>
-            </Paper>
-
-            <Paper className={classes.paper}>
-              <div className={classes.root}>
-
-                <Stepper activeStep={activeStep}>
-                  {steps.map((label, index) => {
-                    const props = {};
-                    const labelProps = {};
-                    if (this.isStepOptional(index)) {
-                      labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                    }
-                    if (this.isStepSkipped(index)) {
-                      props.completed = false;
-                    }
-                    return (
-                      <Step key={label} {...props}>
-                        <StepLabel {...labelProps}>{label}</StepLabel>
-                      </Step>
-                    );
-                  })}
-                </Stepper>
+        <div id="coverLogin" style={divStyle} className={classes.coverLogin}>
+          <ApiLogin onSubmit={this.enablePage} onReset={this.disablePage}/>
+        </div>
+        <TabContainer>
+          <div>
+            <h4>Create Billing Agreement</h4>
+          </div>
+          <React.Fragment>
+            <CssBaseline />
+            <main className={classes.layout}>
+              <Paper className={classes.paper}>
                 <div className={classes.root}>
-                  {activeStep === steps.length ? (
-                    <div>
-                      <Typography className={classes.instructions}>
-                        Agreement completed succesfully.
-                      </Typography>
-                      <Button variant="outlined" onClick={this.handleReset} className={classes.button}>
-                        Start Over
-                      </Button>
-                    </div>
-                  ) : (
-                    <div>
-                      <Typography className={classes.instructions}>
-                        {this.state.mode === 'custom' ? (
-                          <StepContent {...this.props} step={activeStep} />
-                          ):(null)
-                        }
-                      </Typography>
+                  <FormControl component="fieldset" className={classes.formControl}>
+                    <FormLabel component="legend">Agreement Mode:</FormLabel>
+                    <RadioGroup
+                      aria-label="Mode"
+                      name="mode"
+                      className={classes.group}
+                      value={this.state.mode}
+                      onChange={this.handleModeChange}
+                    >
+                      <FormControlLabel value="quick" control={<Radio />} label="Quick" />
+                      <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+                    </RadioGroup>
+                    <FormHelperText>Quick agreements will be processed automatically, Custom agreements require user action for each step.</FormHelperText>
+                  </FormControl>
+                </div>
+              </Paper>
+              <Paper className={classes.paper}>
+                <div className={classes.root}>
+                  <Stepper activeStep={activeStep}>
+                    {steps.map((label, index) => {
+                      const props = {};
+                      const labelProps = {};
+                      if (this.isStepOptional(index)) {
+                        labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                      }
+                      if (this.isStepSkipped(index)) {
+                        props.completed = false;
+                      }
+                      return (
+                        <Step key={label} {...props}>
+                          <StepLabel {...labelProps}>{label}</StepLabel>
+                        </Step>
+                      );
+                    })}
+                  </Stepper>
+                  <div className={classes.root}>
+                    {activeStep === steps.length ? (
                       <div>
-                        {activeStep !== 0 ? (
-                          <Button
-                            disabled={activeStep === 0}
-                            onClick={this.handleBack}
-                            className={classes.button}
-                          >
-                            Back
-                          </Button>
-                        ):(null)}
+                        <Typography className={classes.instructions}>
+                          Agreement completed succesfully.
+                        </Typography>
+                        <Button variant="outlined" onClick={this.handleReset} className={classes.button}>
+                          Start Over
+                        </Button>
+                      </div>
+                    ) : (
+                      <div>
+                        <Typography className={classes.instructions}>
+                          {this.state.mode === 'custom' ? (
+                            <StepContent {...this.props} step={activeStep} />
+                            ):(null)
+                          }
+                        </Typography>
+                        <div>
+                          {activeStep !== 0 ? (
+                            <Button
+                              disabled={activeStep === 0}
+                              onClick={this.handleBack}
+                              className={classes.button}
+                            >
+                              Back
+                            </Button>
+                          ):(null)}
 
-                        {this.isStepOptional(activeStep) && (
+                          {this.isStepOptional(activeStep) && (
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              onClick={this.handleSkip}
+                              className={classes.button}
+                            >
+                              Skip
+                            </Button>
+                          )}
                           <Button
                             variant="outlined"
                             color="primary"
-                            onClick={this.handleSkip}
+                            onClick={this.handleNext}
                             className={classes.button}
                           >
-                            Skip
+                            {this.getStepButtonText(activeStep)}
                           </Button>
-                        )}
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={this.handleNext}
-                          className={classes.button}
-                        >
-                          {this.getStepButtonText(activeStep)}
-                        </Button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-
-                {chipStatus !== '' ? (
-                  <Chip
-                    avatar={
-                      this.getChipIcon(chipIndicator)
-                    }
-                    label={chipStatus}
-                    className={classes.chip}
-                  />
-                ):(null)}
-
-              </div>
-            </Paper>
-            {pData ? (
-              <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handlePanel('panel1')}>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>
-                    <i className="far fa-check-circle" style={{
-                          color: '#090',
-                          paddingRight: '25px'
-                        }}/>
-                    <span style={{fontWeight: 375}}><b>Agreement ID: </b>{pData.id}</span>
-                  </Typography>
-                  <Typography className={classes.heading}>
-                    <span style={{fontWeight: 375}}><b>Status: </b>{pData.state}</span>
-                  </Typography>
-                  <Typography className={classes.secondaryHeading}>
-                    <span style={{fontWeight: 350}}>{moment(pData.create_time).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography>
-                    {pData.plan.payment_definitions.map((pDef, key) =>
-                      <Typography key={key} variant="caption">
-                        <span style={{ paddingRight: '25px' }}><b>Type: </b>{pDef.type}</span>
-                        <span style={{ paddingRight: '25px' }}><b>Value: </b>{pDef.amount.value}</span>
-                        <span style={{ paddingRight: '25px' }}><b>Frequency: </b>{pDef.frequency}</span>
-                        <span style={{ paddingRight: '25px' }}><b>Frequency Interval: </b>{pDef.frequency_interval}</span>
-                        <span style={{ paddingRight: '25px' }}><b>Cycles: </b>{pDef.cycles}</span>
-                        <hr/>
-                      </Typography>
                     )}
-                    <div>
-                      <h4>Agreement Details</h4>
-                      <CodeMirror
-                        ref='ipnMessage'
-                        value={pDataStringified}
-                        options={{
-                          lineNumbers: true,
-                          mode: { name: 'javascript', json: true },
-                          theme: 'material',
-                          readOnly: 'nocursor' // Nocursor for proper mobile handling
-                        }}
-                        onChange={(editor, pDataStringified, value) => {}}
-                        preserveScrollPosition={true}
-                      />
-                    </div>
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            ):(
-              null
-            )}
-          </main>
-        </React.Fragment>
-      </TabContainer>
+                  </div>
+
+                  {chipStatus !== '' ? (
+                    <Chip
+                      avatar={
+                        this.getChipIcon(chipIndicator)
+                      }
+                      label={chipStatus}
+                      className={classes.chip}
+                    />
+                  ):(null)}
+
+                </div>
+              </Paper>
+              {pData ? (
+                <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handlePanel('panel1')}>
+                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className={classes.heading}>
+                      <i className="far fa-check-circle" style={{
+                            color: '#090',
+                            paddingRight: '25px'
+                          }}/>
+                      <span style={{fontWeight: 375}}><b>Agreement ID: </b>{pData.id}</span>
+                    </Typography>
+                    <Typography className={classes.heading}>
+                      <span style={{fontWeight: 375}}><b>Status: </b>{pData.state}</span>
+                    </Typography>
+                    <Typography className={classes.secondaryHeading}>
+                      <span style={{fontWeight: 350}}>{moment(pData.create_time).format('ddd, MMM Do YYYY @ h:mm:ss A')}</span>
+                    </Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <Typography>
+                      {pData.plan.payment_definitions.map((pDef, key) =>
+                        <Typography key={key} variant="caption">
+                          <span style={{ paddingRight: '25px' }}><b>Type: </b>{pDef.type}</span>
+                          <span style={{ paddingRight: '25px' }}><b>Value: </b>{pDef.amount.value}</span>
+                          <span style={{ paddingRight: '25px' }}><b>Frequency: </b>{pDef.frequency}</span>
+                          <span style={{ paddingRight: '25px' }}><b>Frequency Interval: </b>{pDef.frequency_interval}</span>
+                          <span style={{ paddingRight: '25px' }}><b>Cycles: </b>{pDef.cycles}</span>
+                          <hr/>
+                        </Typography>
+                      )}
+                      <div>
+                        <h4>Agreement Details</h4>
+                        <CodeMirror
+                          ref='ipnMessage'
+                          value={pDataStringified}
+                          options={{
+                            lineNumbers: true,
+                            mode: { name: 'javascript', json: true },
+                            theme: 'material',
+                            readOnly: 'nocursor' // Nocursor for proper mobile handling
+                          }}
+                          onChange={(editor, pDataStringified, value) => {}}
+                          preserveScrollPosition={true}
+                        />
+                      </div>
+                    </Typography>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+              ):(
+                null
+              )}
+            </main>
+          </React.Fragment>
+        </TabContainer>
+      </div>
     );
   }
 }
