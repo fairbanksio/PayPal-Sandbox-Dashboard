@@ -73,6 +73,7 @@ class GettingStarted extends React.Component {
     localStorage.setItem("clientID", this.state.clientID);
     localStorage.setItem("clientSecret", this.state.clientSecret);
     this.setState({ saved: true })
+    this.props.userAuth('authenticate')
     event.preventDefault();
   }
 
@@ -80,8 +81,9 @@ class GettingStarted extends React.Component {
     // Clear out the stored Client ID and Secret
     localStorage.removeItem("clientID");
     localStorage.removeItem("clientSecret");
-    event.preventDefault();
     this.setState({ clientID: "", clientSecret: "", saved: false })
+    this.props.userAuth('signout')
+    event.preventDefault();
   }
 
   componentWillMount(){
@@ -91,8 +93,10 @@ class GettingStarted extends React.Component {
   componentDidMount() {
     if(this.state.clientID.length > 0 && this.state.clientSecret.length > 0) {
       this.setState({ saved: true })
+
     }else {
       this.setState({ saved: false })
+
     }
   }
 
