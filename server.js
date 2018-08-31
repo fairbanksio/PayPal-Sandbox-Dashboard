@@ -331,7 +331,7 @@ app.get('*', (req,res) => {
 // App Launcher
 ////
 var port = process.env.PORT || 3000;
-var host = process.env.REACT_APP_HOST || '0.0.0.0';
+var host = process.env.HOST || '0.0.0.0';
 app.listen(port, host, function() {
 	var msg = 'Server listening at http://localhost:' + port;
 	console.log(msg);
