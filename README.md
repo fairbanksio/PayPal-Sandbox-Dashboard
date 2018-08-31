@@ -3,6 +3,8 @@
 
 Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK.
 
+[![PayPal-Sandbox-Dashboard](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard)
+
 ##### Features
 * It's Open Source!
 * Based on Material UI and React.js
