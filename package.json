@@ -17,6 +17,9 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {},
+  "engines" : {
+    "node" : ">=8.0.0"
+  },
   "scripts": {
     "start": "clear && cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
   },
