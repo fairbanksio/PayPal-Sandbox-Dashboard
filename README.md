@@ -1,6 +1,5 @@
 # PayPal Sandbox Dashboard
-![PayPal-Sandbox-Dashboard](https://raw.githubusercontent.com/Fairbanks-io/PayPal-Sandbox-Dashboard/master/PayPal-Payment-Dashboard11.gif)
-
+<img src="https://raw.githubusercontent.com/Fairbanks-io/PayPal-Sandbox-Dashboard/master/PayPal-Payment-Dashboard.gif" width="100%">
 Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK.
 
 ##### Features
