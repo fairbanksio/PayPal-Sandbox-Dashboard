@@ -19,6 +19,9 @@ Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK
 * `yarn` or `npm` (hopefully `yarn`)
 * A domain with SSL
 
+------------
+
+
 #### PayPal Sandbox Setup Instructions
 * [Create a Sandbox Merchant account](https://developer.paypal.com/developer/accounts/) and add verified funding sources and pre-fill the account with test money.
 
@@ -27,25 +30,29 @@ Test various features of the PayPal Sandbox using React.js and PayPal's REST SDK
 * While [creating accounts](https://developer.paypal.com/developer/accounts/), also setup a Sandbox Payer account and be sure to add a verified funding source and pre-fill the account with test money.
 
 * [Create a new REST API application](https://developer.paypal.com/developer/applications/) and tie it to the previously created Sandbox merchant account. Take note of your **Sandbox** *ClientID* and *Secret*. (Live is supported by this app, but make note that **if Live credentials are used, real money will be moved!**)
+
+------------
+
+
 #### Deploy application
 * Choose one of the 3 below deployment methods
 
 * _Optional: The app can be ran on an alternate port by passing `PORT=3001` along with the startup command above._
 
-##### Local Deployment with existing MongoDB
-* Download this app's source code from Github. Extract to the folder of your choice and run `yarn install` to download dependencies.
+ ##### Local Deployment with existing MongoDB
+ * Download this app's source code from Github. Extract to the folder of your choice and
+ run `yarn install` to download dependencies.
 
-* Launch the app using `MONGO_URI='mongodb://user:password@mysite.io/paypal' REACT_APP_HOST='sandbox.mysite.io' yarn start`
+ * Launch the app using
+ `MONGO_URI='mongodb://user:password@mysite.io/paypal' REACT_APP_HOST='sandbox.mysite.io' yarn start`
 
-##### Docker image deployment with existing MongoDB
-`docker run -it -p 3090:3000 -e REACT_APP_HOST='sandbox.mysite.io' -e MONGO_URI='mongodb://user:password@mysite.io/paypal' --name PayPal-Sandbox-Dashboard Fairbanks-io/PayPal-Sandbox-Dashboard`
+ ##### Docker image deployment with existing MongoDB
+ * `docker run -it -p 3090:3000 -e REACT_APP_HOST='sandbox.mysite.io' -e MONGO_URI='mongodb://user:password@mysite.io/paypal' --name PayPal-Sandbox-Dashboard Fairbanks-io/PayPal-Sandbox-Dashboard`
 
-##### Docker-compose deployment (includes blank MongoDB instance)
-`git clone https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard .`
+ ##### Docker-compose deployment (includes blank MongoDB instance)
+ * `git clone https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard .`
 
-`apt-get install docker docker-compose`
-
-`export REACT_APP_HOST=sandbox.mysite.io PORT=3090; docker-compose up`
+ * `export REACT_APP_HOST=sandbox.mysite.io PORT=3090; docker-compose up`
 
 #### Using the application
 
