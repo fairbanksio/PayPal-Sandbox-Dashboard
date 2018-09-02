@@ -19,4 +19,4 @@ RUN git clone https://github.com/fairbanks-io/PayPal-Sandbox-Dashboard .; yarn b
 
 EXPOSE 3000
 # And go
-CMD ["yarn", "run"]
+CMD ["node", "server.js"]
