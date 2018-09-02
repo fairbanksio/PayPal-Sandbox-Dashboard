@@ -23,15 +23,10 @@ class GettingStarted extends React.Component {
     this.handleReset = this.handleReset.bind(this);
   }
 
-  componentWillMount(){
-    this.props.tabChange(null, this.props.match.path)
-  }
+  handleSubmit(){ }
+  handleReset(){ }
 
-  handleSubmit(){
-  }
-
-  handleReset(){
-  }
+  componentWillMount(){ this.props.tabChange(null, this.props.match.path) }
 
   render() {
     const { classes } = this.props;

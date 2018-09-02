@@ -1,0 +1,1 @@
+web: MONGO_URI=process.ENV.MONGO_URI REACT_APP_HOST=process.ENV.REACT_APP_HOST yarn start

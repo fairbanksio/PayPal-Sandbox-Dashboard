@@ -157,7 +157,7 @@ class IpnList extends React.Component {
                       : null
                     }
                   </Typography>
-                  <Divider/>
+                  <br/><Divider/>
                     <h4>IPN Message</h4>
                     <CodeMirror
                       ref='ipnMessage'
@@ -175,18 +175,24 @@ class IpnList extends React.Component {
                     />
                     <br />
                     {this.state.copied
-                      ? <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
-                          <i className="fas fa-check"></i>
-                          <span style={{ marginLeft: 6 }}>Copied</span>
-                        </Button>
-                      : <CopyToClipboard text={JSON.stringify(this.state.ipnMessage, null, ' ')} onCopy={() => this.setState({copied: true})}>
-                          <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
-                            <i className="fas fa-copy"></i>
-                            <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                      ? <div key={key}>
+                          <Button onClick={this.copyJSON} size="small" variant="outlined" color="secondary" style={{ fontSize: 11 }}>
+                            <i className="fas fa-check"></i>
+                            <span style={{ marginLeft: 6 }}>Copied</span>
                           </Button>
-                        </CopyToClipboard>
+                          <br/>
+                        </div>
+                      : <div key={key}>
+                          <CopyToClipboard text={JSON.stringify(this.state.ipnMessage, null, ' ')} onCopy={() => this.setState({copied: true})}>
+                            <Button onClick={this.copyJSON} size="small" variant="outlined" color="primary" style={{ fontSize: 11 }}>
+                              <i className="fas fa-copy"></i>
+                              <span style={{ marginLeft: 6 }}>Copy JSON</span>
+                            </Button>
+                          </CopyToClipboard>
+                          <br/>
+                        </div>
                     }
-                  <br/><Divider/>
+                  <Divider/>
                   <div>
                     <h4>IPN Postback</h4>
                     <CodeMirror
