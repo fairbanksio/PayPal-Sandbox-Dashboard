@@ -3,10 +3,10 @@ services:
     paypal-sandbox-dashboard:
         build: .
         container_name: "paypal-sandbox-dashboard"
-        image: bsord-paypal-sandbox-dashboard
+        image: fairbanksio/paypal-sandbox-dashboard
         environment:
-            - MONGO_URI='mongodb://paypal:password@mongodb:27017/paypal'
-            - REACT_APP_HOST='paygen.bsord.io'
+            - MONGO_URI=mongodb://mongodb:27017/paypal
+            - REACT_APP_HOST=${REACT_APP_HOST}
         ports:
             - 3090:3000
         links:
@@ -17,9 +17,7 @@ services:
         image: mongo:latest
         container_name: "mongodb"
         environment:
-          - MONGO_INITDB_ROOT_USERNAME=paypal
-          - MONGO_INITDB_ROOT_PASSWORD=password
           - MONGO_INITDB_DATABASE=paypal
         ports:
-            - 27017:27017
-        command: mongod # --quiet
+            - 27018:27017
+        command: mongod --smallfiles --quiet
