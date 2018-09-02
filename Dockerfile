@@ -15,7 +15,7 @@ USER  sandbox-dashboard
 WORKDIR /sandbox-dashboard
 
 # Install PayPal-Sandbox-dashboard
-RUN git clone https://github.com/fairbanks-io/PayPal-Sandbox-Dashboard .; yarn build
+RUN git clone https://github.com/bsord/PayPal-Sandbox-Dashboard .; yarn build
 
 EXPOSE 3000
 # And go
