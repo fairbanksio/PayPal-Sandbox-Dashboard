@@ -18,7 +18,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "clear && cd client && yarn install && yarn build && cd .. && yarn install && node server.js"
+    "start": "clear && cd client && yarn install && yarn build && cd .. && yarn install && node server.js",
+    "build": "clear && cd client && yarn install && yarn build && cd .. && yarn install",
+    "run": "node server.js"
   },
   "repository": {
     "type": "git",
