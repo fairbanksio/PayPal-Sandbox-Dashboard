@@ -1,14 +1,13 @@
 version: '2'
 services:
     paypal-sandbox-dashboard:
-        build: .
         container_name: "paypal-sandbox-dashboard"
         image: fairbanksio/paypal-sandbox-dashboard
         environment:
             - MONGO_URI=mongodb://mongodb:27017/paypal
             - REACT_APP_HOST=${REACT_APP_HOST}
         ports:
-            - 3090:3000
+            - "${PORT}:3000"
         links:
             - mongodb
         depends_on:
