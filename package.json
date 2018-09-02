@@ -4,15 +4,10 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "@material-ui/icons": "^2.0.3",
-    "codemirror": "^5.39.2",
     "express": "^4.15.4",
     "express-session": "^1.15.6",
-    "moment": "^2.22.2",
     "mongoose": "^5.2.9",
     "paypal-rest-sdk": "^1.8.1",
-    "react-codemirror2": "^5.1.0",
-    "react-copy-to-clipboard": "^5.0.1",
     "request": "^2.81.0",
     "winston": "^3.0.0"
   },
