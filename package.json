@@ -18,7 +18,7 @@
   "scripts": {
     "start": "cd client && yarn install && yarn build && cd .. && yarn install && node server.js",
     "build": "cd client && yarn install && yarn build && cd .. && yarn install",
-    "run": "node server.js"
+    "serve": "node server.js"
   },
   "repository": {
     "type": "git",
