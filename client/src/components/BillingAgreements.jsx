@@ -533,16 +533,17 @@ class PayPalAgreements extends React.Component {
     var billPlanId = localStorage.getItem("pBillPlanId")
     var agreementName = localStorage.getItem("agreementName")
     var agreementDesc = localStorage.getItem("agreementDesc")
-    var agreementStart = new Date(localStorage.getItem("agreementStart")).toISOString().slice(0,19) + 'Z';;
+    var agreementStart = new Date(localStorage.getItem("agreementStart"));
     var isoDate = new Date();
-    isoDate.setSeconds(isoDate.getSeconds() + 10);
-    isoDate = isoDate.toISOString().slice(0,19) + 'Z';
+    if(agreementStart < isoDate){agreementStart = isoDate}
+    agreementStart.setSeconds(agreementStart.getSeconds() + 10);
+    agreementStart = agreementStart.toISOString().slice(0,19) + 'Z';
 
     this.setState({chipStatus:'Creating billing agreement...', chipIndicator:'loading'})
     var billingAgreementAttributes = {
         "name": agreementName || "Fast Speed Agreement",
         "description": agreementDesc || "Agreement for Fast Speed Plan",
-        "start_date": agreementStart || isoDate,
+        "start_date": agreementStart ,
         "plan": {
             "id": billPlanId
         },
