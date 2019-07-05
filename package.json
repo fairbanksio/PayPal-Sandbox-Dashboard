@@ -1,10 +1,10 @@
 {
   "name": "paypal-sandbox-dashboard",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.15.4",
+    "express": "^4.17.1",
     "express-session": "^1.15.6",
     "mongoose": "^5.2.9",
     "paypal-rest-sdk": "^1.8.1",
@@ -12,12 +12,12 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {},
-  "engines" : {
-    "node" : ">=8.0.0"
+  "engines": {
+    "node": ">=8.0.0"
   },
   "scripts": {
-    "start": "cd client && yarn install && yarn build && cd .. && yarn install && node server.js",
-    "build": "cd client && yarn install && yarn build && cd .. && yarn install",
+    "start": "cd client && npm install && npm build && cd .. && npm install && node server.js",
+    "build": "cd client && npm install && npm build && cd .. && npm install",
     "serve": "node server.js"
   },
   "repository": {
