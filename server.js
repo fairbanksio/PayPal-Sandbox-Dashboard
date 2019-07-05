@@ -9,7 +9,6 @@ var mongoose = require("mongoose");
 var newIPN = require('./models/ipn');
 
 const path = require('path');
-
 // MongoDB Setup
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 var connection = mongoose.connection;

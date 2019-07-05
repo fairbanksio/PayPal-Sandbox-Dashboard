@@ -1,14 +1,19 @@
 {
   "name": "paypal-sandbox-dashboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.5.0",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
+    "@material-ui/icons": "^2.0.3",
+    "moment": "^2.22.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4",
-    "time-stamp": "^2.0.1"
+    "react-scripts": "3.0.1",
+    "time-stamp": "^2.0.1",
+    "codemirror": "^5.39.2",
+    "react-codemirror2": "^5.1.0",
+    "react-copy-to-clipboard": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
