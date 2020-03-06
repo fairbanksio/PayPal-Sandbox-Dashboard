@@ -16,8 +16,8 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "start": "cd client && npm install && npm build && cd .. && npm install && node server.js",
-    "build": "cd client && npm install && npm build && cd .. && npm install",
+    "start": "cd client && npm install && npm run build && cd .. && npm install && node server.js",
+    "build": "cd client && npm install && npm run build && cd .. && npm install",
     "serve": "node server.js"
   },
   "repository": {
