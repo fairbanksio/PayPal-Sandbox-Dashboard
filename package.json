@@ -21,7 +21,9 @@
   "scripts": {
     "start": "cd client && npm install && npm run build && cd .. && npm install && node server.js",
     "build": "cd client && npm install && npm run build && cd .. && npm install",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "lint": "./node_modules/eslint/bin/eslint.js .",
+    "lint-fix": "./node_modules/eslint/bin/eslint.js . --fix"
   },
   "repository": {
     "type": "git",
