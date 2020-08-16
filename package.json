@@ -11,11 +11,12 @@
     "request": "^2.81.0",
     "winston": "^3.0.0"
   },
-  "devDependencies": {},
-  "engines": {
+  "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-import": "^2.22.0"
+  },
+  "engines": {
     "node": ">=8.0.0"
   },
   "scripts": {
