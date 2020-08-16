@@ -9,13 +9,13 @@
     "mongoose": "^5.7.5",
     "paypal-rest-sdk": "^1.8.1",
     "request": "^2.81.0",
-    "winston": "^3.0.0",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.22.0"
+    "winston": "^3.0.0"
   },
   "devDependencies": {},
   "engines": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.22.0",
     "node": ">=8.0.0"
   },
   "scripts": {
