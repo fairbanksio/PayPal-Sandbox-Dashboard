@@ -1,15 +1,17 @@
-version: '2'
+version: '3.7'
 services:
     paypal-sandbox-dashboard:
         container_name: "paypal-sandbox-dashboard"
-        image: fairbanksio/paypal-sandbox-dashboard
+        build:
+            context: . 
+            network: ppsd-net
         environment:
             - MONGO_URI=mongodb://mongodb:27017/paypal
             - REACT_APP_HOST=${REACT_APP_HOST}
         ports:
-            - "${PORT}:3000"
-        links:
-            - mongodb
+            - "3000:3000"
+        networks:
+            - ppsd-net
         depends_on:
             - mongodb
     mongodb:
@@ -18,5 +20,11 @@ services:
         environment:
           - MONGO_INITDB_DATABASE=paypal
         ports:
-            - 27018:27017
-        command: mongod --smallfiles --quiet
+            - 27017:27017
+        command: mongod --quiet
+        networks:
+            - ppsd-net
+networks:
+    ppsd-net:
+        name: ppsd-net
+        driver: bridge
