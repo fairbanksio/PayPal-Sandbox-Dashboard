@@ -9,12 +9,12 @@ RUN apk update && apk upgrade \
   && apk add npm \
   && npm install -g yarn
 
-# Create hubot user
+# Create user
 RUN adduser -h /sandbox-dashboard -s /bin/bash -S sandbox-dashboard
 USER  sandbox-dashboard
 WORKDIR /sandbox-dashboard
 
-# Install PayPal-Sandbox-dashboard
+# Clone source code
 RUN git clone https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard .
 
 EXPOSE 3000
