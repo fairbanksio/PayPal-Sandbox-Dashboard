@@ -1,7 +1,7 @@
 
 
-FROM node:12-slim
-MAINTAINER Brandon Sorgdrager <Brandon.Sorgdrager@gmail.com>
+FROM node:12-alpine
+MAINTAINER Brandon Sorgdrager <https://github.com/bsord>, Jon Fairbanks <https://github.com/jonfairbanks>
 ENV NODE_ENV=production
 EXPOSE 3000
 RUN mkdir /app && chown -R node:node /app
