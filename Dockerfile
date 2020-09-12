@@ -1,22 +1,23 @@
-FROM alpine
 
+
+FROM node:12-slim
 MAINTAINER Brandon Sorgdrager <Brandon.Sorgdrager@gmail.com>
+ENV NODE_ENV=production
+EXPOSE 3000
+RUN mkdir /app && chown -R node:node /app
+WORKDIR /app
+USER node
+COPY --chown=node:node . .
 
-# Install dependencies
-RUN apk update && apk upgrade \
-  && apk add git \
-  && apk add nodejs \
-  && apk add npm \
-  && npm install -g yarn
+# Install client dependencies and build
+RUN cd /app/client
+RUN npm install
+RUN npm run build
 
-# Create user
-RUN adduser -h /sandbox-dashboard -s /bin/bash -S sandbox-dashboard
-USER  sandbox-dashboard
-WORKDIR /sandbox-dashboard
-
-# Clone source code
-RUN git clone https://github.com/Fairbanks-io/PayPal-Sandbox-Dashboard .
+# Install server depedencies
+RUN cd /app
+RUN npm install
 
 EXPOSE 3000
 # And go
-CMD ["yarn", "start"]
+CMD ["npm", "run", "serve"]
