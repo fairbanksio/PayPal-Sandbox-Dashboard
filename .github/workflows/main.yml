@@ -64,7 +64,7 @@ jobs:
         if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ${{ github.repository }}
+          name: "fairbanksio/paypal-sandbox-dashboard"
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
           tags: "latest,${{ steps.get-next-version.outputs.version }}"
