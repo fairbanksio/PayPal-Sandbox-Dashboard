@@ -9,7 +9,7 @@
     "mongoose": "^5.12.3",
     "paypal-rest-sdk": "^1.8.1",
     "request": "^2.88.2",
-    "winston": "^3.0.0"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
