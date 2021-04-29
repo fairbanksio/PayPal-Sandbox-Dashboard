@@ -1,0 +1,17 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "13:00"
+  open-pull-requests-limit: 10
+  target-branch: develop
+  assignees:
+  - jonfairbanks
+  - bsord
+  versioning-strategy: increase
+  ignore:
+  - dependency-name: mongoose
+    versions:
+    - 5.12.5
