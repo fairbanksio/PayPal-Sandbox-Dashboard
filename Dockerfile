@@ -1,6 +1,6 @@
 
 
-FROM node:12-alpine
+FROM node:14-alpine
 MAINTAINER Brandon Sorgdrager <https://github.com/bsord>, Jon Fairbanks <https://github.com/jonfairbanks>
 ENV NODE_ENV=production
 EXPOSE 3000
