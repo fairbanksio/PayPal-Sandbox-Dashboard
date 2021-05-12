@@ -3,17 +3,17 @@
   "version": "0.1.2",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^1.5.0",
-    "@material-ui/icons": "^2.0.3",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "codemirror": "^5.58.2",
     "moment": "^2.29.1",
     "react": "^16.8.6",
+    "react-codemirror2": "^5.1.0",
+    "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "3.0.1",
-    "time-stamp": "^2.2.0",
-    "codemirror": "^5.58.2",
-    "react-codemirror2": "^5.1.0",
-    "react-copy-to-clipboard": "^5.0.3"
+    "react-scripts": "^4.0.3",
+    "time-stamp": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
