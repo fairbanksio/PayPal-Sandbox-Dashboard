@@ -11,7 +11,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "3.0.1",
     "time-stamp": "^2.0.1",
-    "codemirror": "^5.39.2",
+    "codemirror": "^5.58.2",
     "react-codemirror2": "^5.1.0",
     "react-copy-to-clipboard": "^5.0.1"
   },
