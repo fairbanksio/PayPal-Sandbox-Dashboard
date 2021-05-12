@@ -13,7 +13,7 @@
     "time-stamp": "^2.2.1",
     "codemirror": "^5.58.2",
     "react-codemirror2": "^5.1.0",
-    "react-copy-to-clipboard": "^5.0.1"
+    "react-copy-to-clipboard": "^5.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
