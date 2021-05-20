@@ -5,7 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.17.1",
-    "express-session": "^1.17.1",
+    "express-session": "^1.17.2",
     "mongoose": "^5.12.8",
     "paypal-rest-sdk": "^1.8.1",
     "request": "^2.88.2",
