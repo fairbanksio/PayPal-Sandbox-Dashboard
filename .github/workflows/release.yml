@@ -88,7 +88,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.update-versions.outputs.version }}
-          release_name: Docker Release v${{ steps.update-versions.outputs.version }}
+          release_name: Release ${{ steps.update-versions.outputs.version }}
           body: |
             The latest version(s) can be launched with:
               - `docker run -d -p 8080:8080 --name docker-node-app --restart always ${{ github.repository }}:${{ steps.update-versions.outputs.version }}`
