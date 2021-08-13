@@ -1,0 +1,13 @@
+{{- if or (and .Values.autoscaling.enabled (gt (.Values.autoscaling.minReplicas | int) 1)) (gt (.Values.replicaCount | int) 1) -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    {{- include "paypal-sandbox-dashboard.labels" . | nindent 4 }}
+  name: {{ include "paypal-sandbox-dashboard.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "paypal-sandbox-dashboard.selectorLabels" . | nindent 6 }}
+  minAvailable: {{ .Values.minAvailable }}
+{{- end }}
