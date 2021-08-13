@@ -21,7 +21,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Update version in version files
-        id: update-version
+        id: update-versions
         run: |
           # Bump version
           npm version --no-git-tag-version patch
@@ -35,8 +35,8 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v7.2.1
         with:
-          message: "chore(version): Bump to: ${{ steps.update-version.outputs.version }}"
-          tag: "${{ steps.update-version.outputs.version }}"
+          message: "chore(version): Bump to: ${{ steps.update-versions.outputs.version }}"
+          tag: "${{ steps.update-versions.outputs.version }}"
           push: "origin master --force"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -44,8 +44,8 @@ jobs:
       - name: Set Image Tag(s)
         id: tag-images
         run: |
-          if [[ ${{ steps.update-version.outputs.version }} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-            TAGS="fairbanksio/paypal-sandbox-dashboard:${{ steps.update-version.outputs.version }},fairbanksio/paypal-sandbox-dashboard:latest"
+          if [[ ${{ steps.update-versions.outputs.version }} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            TAGS="fairbanksio/paypal-sandbox-dashboard:${{ steps.update-versions.outputs.version }},fairbanksio/paypal-sandbox-dashboard:latest"
           else
             TAGS="${{ github.repository }}:latest"
           fi
