@@ -45,7 +45,7 @@ jobs:
         id: tag-images
         run: |
           if [[ ${{ steps.update-version.outputs.version }} =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-            TAGS="${{ github.repository }}:${{ steps.update-version.outputs.version }},${{ github.repository }}:latest"
+            TAGS="fairbanksio/paypal-sandbox-dashboard:${{ steps.update-version.outputs.version }},fairbanksio/paypal-sandbox-dashboard:latest"
           else
             TAGS="${{ github.repository }}:latest"
           fi
