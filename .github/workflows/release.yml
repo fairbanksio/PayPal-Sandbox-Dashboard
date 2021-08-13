@@ -91,7 +91,7 @@ jobs:
           release_name: Release ${{ steps.update-versions.outputs.version }}
           body: |
             The latest version(s) can be launched with:
-              - `docker run -d -p 3000:3000 --name paypal-sandbox-dashboard -e MONG_URI="mongo://user:pass@host.tld:27017" --restart always fairbanksio/paypal-sandbox-dashboard:${{ steps.update-versions.outputs.version }}`
+              - `docker run -d -p 3000:3000 --name paypal-sandbox-dashboard -e MONGO_URI="mongo://user:pass@host.tld:27017" --restart always fairbanksio/paypal-sandbox-dashboard:${{ steps.update-versions.outputs.version }}`
           draft: false
           prerelease: false
       
