@@ -1,6 +1,6 @@
 {
   "name": "paypal-sandbox-dashboard",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "main": "server.js",
   "dependencies": {
