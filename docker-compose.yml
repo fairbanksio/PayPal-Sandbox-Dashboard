@@ -6,7 +6,7 @@ services:
             context: . 
             network: ppsd-net
         environment:
-            - MONGO_URI=mongodb://mongodb:27017/paypal
+            - MONGO_URI=mongodb://mongodb:27017
             - REACT_APP_HOST=${REACT_APP_HOST}
         ports:
             - "3000:3000"
@@ -17,8 +17,6 @@ services:
     mongodb:
         image: mongo:latest
         container_name: "mongodb"
-        environment:
-          - MONGO_INITDB_DATABASE=paypal
         ports:
             - 27017:27017
         command: mongod --quiet
