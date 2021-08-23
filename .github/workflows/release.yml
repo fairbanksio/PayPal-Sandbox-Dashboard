@@ -126,7 +126,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.PERSONAL_TOKEN }}
-          repo: jonfairbanks/helm-charts
+          repo: Fairbanks-io/helm-charts
           workflow: Helm repo index
 
       - uses: act10ns/slack@v1
