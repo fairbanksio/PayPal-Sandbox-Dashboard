@@ -2,7 +2,7 @@
   "name": "paypal-sandbox-dashboard",
   "version": "1.0.11",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.17.2",
@@ -22,9 +22,9 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "cd client && npm install && npm run build && cd .. && npm install && node server.js",
+    "start": "cd client && npm install && npm run build && cd .. && npm install && node index.js",
     "build": "cd client && npm install && npm run build && cd .. && npm install",
-    "serve": "node server.js",
+    "serve": "node index.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "lint-fix": "./node_modules/eslint/bin/eslint.js . --fix"
   },
