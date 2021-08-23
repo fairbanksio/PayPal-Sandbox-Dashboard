@@ -32,7 +32,7 @@ FROM server-base as server-dev
 ENV NODE_ENV=development
 ENV PATH=/app/node_modules/.bin:$PATH
 RUN npm install --only=development --no-optional --silent && npm cache clean --force > "/dev/null" 2>&1
-CMD ["nodemon", "server.js", "--inspect=0.0.0.0:9229"]
+CMD ["nodemon", "index.js", "--inspect=0.0.0.0:9229"]
 
 # Development ENV
 FROM client-base as client-dev
@@ -53,4 +53,4 @@ COPY --chown=node:node . .
 FROM server-source as prod
 COPY --from=client-source /app/build ./client/build
 ENTRYPOINT ["/tini", "--"]
-CMD ["node", "server.js"]
+CMD ["node", "index.js"]
