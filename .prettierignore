@@ -1,0 +1,11 @@
+__tests__/*
+.github/*
+chart/*
+.*ignore
+.*rc
+*.md
+package.json
+package-lock.json
+build
+*.yaml
+*.yml
