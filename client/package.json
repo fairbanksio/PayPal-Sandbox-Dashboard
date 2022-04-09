@@ -9,7 +9,7 @@
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "codemirror": "^5.61.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "react-codemirror2": "^7.2.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-router-dom": "^5.2.0",
